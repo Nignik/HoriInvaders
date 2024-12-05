@@ -11,6 +11,7 @@
 
 #include "Gun.h"
 #include "ShootingSystem.h"
+#include "ProjectileFactory.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ int main()
 	const auto& enemy = world.CreateEntity();
 	world.AddComponent(enemy, Hori::Sprite());
 	world.AddComponent(enemy, Gun(guns["base_gun"]));
+	world.AddComponent(enemy, ProjectileFactory());
 	world.AddComponent(enemy, Hori::Transform({ 100.0f, 100.0f }, 0.0f, { 50.0f, 50.0f }));
 	world.AddComponent(enemy, Hori::LoadShaderFromFile("shaders/sprite.vs", "shaders/sprite.fs"));
 	world.AddComponent(enemy, Hori::LoadTextureFromFile("resources/textures/awesomeface.png", true));
