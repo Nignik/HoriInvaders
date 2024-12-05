@@ -21,7 +21,10 @@ struct Gun
 		{
 			projectiles.emplace_back(it->second);
 		}
+
+		reload.resize(projectiles.size());
 	}
 
 	std::vector<Projectile> projectiles{};
+	std::vector<float> reload{};
 };
