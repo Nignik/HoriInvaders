@@ -1,11 +1,10 @@
 base_gun:
   projectiles:
     base_projectile:
-      damage: 50
+      damage: 50.0
       cooldown: 0.5
-      velocity:
-        - 1
-        - 1
-      sprite: "resources/sprites/awesomeface.png"
-      directions:
-        - 0
+      speed: 200.0
+      direction: 0.0
+      sprite: "resources/textures/awesomeface.png"
+      shader: "shaders/sprite"
+      

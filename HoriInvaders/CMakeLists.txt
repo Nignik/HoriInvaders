@@ -16,10 +16,14 @@ add_custom_command(
     TARGET HoriInvaders POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/HoriInvaders/shaders
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/HoriInvaders/resources
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/HoriInvaders/data
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_CURRENT_SOURCE_DIR}/shaders
             ${CMAKE_BINARY_DIR}/HoriInvaders/shaders
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_CURRENT_SOURCE_DIR}/resources
             ${CMAKE_BINARY_DIR}/HoriInvaders/resources
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_CURRENT_SOURCE_DIR}/data
+            ${CMAKE_BINARY_DIR}/HoriInvaders/data
 )

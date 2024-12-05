@@ -5,6 +5,8 @@
 #include <Core/Texture.h>
 #include <Core/ResourceManager.h>
 #include <Core/VelocityComponent.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
 
 struct Projectile
 {
@@ -12,20 +14,24 @@ struct Projectile
 	{
 		damage = projectileData["damage"].as<float>();
 		cooldown = projectileData["cooldown"].as<float>();
-		velocity.velocity.x = projectileData["velocity"][0].as<float>();
-		velocity.velocity.y = projectileData["velocity"][1].as<float>();
+		velocity.speed = projectileData["speed"].as<float>();
+		velocity.dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(projectileData["direction"].as<float>()));
 		texture = Hori::LoadTextureFromFile(projectileData["sprite"].as<std::string>(), true);
-		auto dirs = projectileData["directions"];
+
+		const auto& shader_name = projectileData["shader"].as<std::string>();
+		shader = Hori::LoadShaderFromFile(shader_name + ".vs", shader_name + ".fs");
+		/*auto dirs = projectileData["directions"];
 		directions.reserve(dirs.size());
 		for (size_t i = 0; i < dirs.size(); i++)
 		{
 			directions.push_back(dirs[i].as<float>());
-		}
+		}*/
 	}
 
 	float damage{};
 	float cooldown{};
 	Hori::VelocityComponent velocity{};
 	Hori::Texture2D texture{};
+	Hori::Shader shader{};
 	std::vector<float> directions{};
 };

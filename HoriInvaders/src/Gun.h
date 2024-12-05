@@ -13,13 +13,13 @@ A gun spawns projectiles. Projectiles are new entities.
 
 struct Gun
 {
-	Gun(YAML::Node& gunData)
+	Gun(YAML::Node gunData)
 	{
 		auto projs = gunData["projectiles"];
 		projectiles.reserve(projectiles.size());
-		for (size_t i = 0; i < projs.size(); i++)
+		for (auto it = projs.begin(); it != projs.end(); ++it)
 		{
-			projectiles.emplace_back(projs[i]);
+			projectiles.emplace_back(it->second);
 		}
 	}
 
