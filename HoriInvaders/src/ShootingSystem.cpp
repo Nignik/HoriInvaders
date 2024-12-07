@@ -5,6 +5,7 @@
 #include <World.h>
 #include <Core/Sprite.h>
 #include <Core/Transform.h>
+#include <Core/Renderer.h>
 
 ShootingSystem::ShootingSystem()
 {
@@ -14,6 +15,8 @@ ShootingSystem::ShootingSystem()
 void ShootingSystem::Update(float deltaTime)
 {
 	auto& world = Hori::World::GetInstance();
+
+	// For every entity that has a gun component shoot all projectiles
 	for (const auto& entity : world.GetEntitiesWithComponents<Gun>())
 	{
 		auto& gun = world.GetComponent<Gun>(entity);
@@ -28,33 +31,30 @@ void ShootingSystem::Update(float deltaTime)
 			auto projEntity = Shoot(projectile);
 			gun.reload[i] = projectile.cooldown;
 			
-			factory.projectileEntities.push_back(projEntity);
+			factory.projectileEntities.insert(projEntity);
 		}
 
-		// Only for test, needs to be implemented fully
-		// It fucking works but really need to make projectileEntities vector into a set
-		std::vector<int> removed;
-		for (int i = 0; i < factory.projectileEntities.size(); i++)
+		// Check for every projectile, whether it has left the screen, if so delete
+		std::vector<Hori::Entity> removed;
+		for (auto& projEntity : factory.projectileEntities)
 		{
-			auto& projEntity = factory.projectileEntities[i];
 			auto& position = world.GetComponent<Hori::Transform>(projEntity).position;
-			if (position.x > 400.0f || position.y > 400.0f)
+			const auto& screenSize = Hori::Renderer::GetInstance().GetScreenSize();
+			if (position.x < 0 || position.x > screenSize.x || position.y < 0 || position.y > screenSize.y)
 			{
 				world.RemoveEntity(projEntity);
-				removed.push_back(i);
+				removed.push_back(projEntity);
 			}
 		}
 
-		int cnt = 0;
-		for (auto idx : removed)
+		for (auto& projEntity : removed)
 		{
-			auto& arr = factory.projectileEntities;
-			arr.erase(arr.begin() + idx - cnt);
-			cnt++;
+			factory.projectileEntities.erase(projEntity);
 		}
 	}
 }
 
+// Creates entity in the world
 Hori::Entity ShootingSystem::Shoot(Projectile& projectile)
 {
 	auto& world = Hori::World::GetInstance();

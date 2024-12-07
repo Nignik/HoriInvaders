@@ -5,6 +5,9 @@
 
 #include "Projectile.h"
 
+/*
+	Class responsible for creating entities from projectiles descriptions
+*/
 class ShootingSystem : public Hori::System
 {
 public:
