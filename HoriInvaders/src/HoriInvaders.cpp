@@ -12,6 +12,8 @@
 #include "Gun.h"
 #include "ShootingSystem.h"
 #include "ProjectileFactory.h"
+#include "Player.h"
+#include "DamageSystem.h"
 
 using namespace std;
 
@@ -23,23 +25,29 @@ int main()
 	auto& renderer = Hori::Renderer::GetInstance();
 	auto& world = Hori::World::GetInstance();
 
+	// BAD !!!!!!!!!! Damage system is not guaranteed to execute after the collision system
+	world.AddSystem<DamageSystem>(DamageSystem());
 	world.AddSystem<ShootingSystem>(ShootingSystem());
-	
-	const auto& player = world.CreateEntity();
-	world.AddComponent(player, Hori::Sprite());
-	world.AddComponent(player, Hori::Controller());
-	world.AddComponent(player, Hori::VelocityComponent({0.0f, 0.0f}, 500.0f));
-	world.AddComponent(player, Hori::Transform({ 200.0f, 200.0f }, 0.0f, { 100.0f, 100.0f }));
-	world.AddComponent(player, Hori::SphereCollider(Hori::Transform({ 300.0f, 300.0f }, 0.0f, { 50.0f, 50.0f }), 100.0f));
-	world.AddComponent(player, Hori::LoadShaderFromFile("shaders/sprite.vs", "shaders/sprite.fs"));
-	world.AddComponent(player, Hori::LoadTextureFromFile("resources/textures/awesomeface.png", true));
-	
+
+	Hori::Transform playerTransform = {
+		.position = {400.0f, 400.0f},
+		.rotation = 0.0f,
+		.scale = {100.0f, 100.0f}
+	};
+	Player player(playerTransform, 500.0f, 50);
+
+	Hori::Transform enemyTransform = {
+		.position = {100.0f, 100.0f},
+		.rotation = 0.0f,
+		.scale = {50.0f, 50.0f}
+	};
 	auto guns = YAML::LoadFile("data/guns.yaml");
 	const auto& enemy = world.CreateEntity();
 	world.AddComponent(enemy, Hori::Sprite());
 	world.AddComponent(enemy, Gun(guns["base_gun"]));
 	world.AddComponent(enemy, ProjectileFactory());
-	world.AddComponent(enemy, Hori::Transform({ 100.0f, 100.0f }, 0.0f, { 50.0f, 50.0f }));
+	world.AddComponent(enemy, enemyTransform);
+	world.AddComponent(enemy, Hori::SphereCollider(enemyTransform, false));
 	world.AddComponent(enemy, Hori::LoadShaderFromFile("shaders/sprite.vs", "shaders/sprite.fs"));
 	world.AddComponent(enemy, Hori::LoadTextureFromFile("resources/textures/awesomeface.png", true));
 

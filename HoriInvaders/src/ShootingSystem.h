@@ -6,7 +6,7 @@
 #include "Projectile.h"
 
 /*
-	Class responsible for creating entities from projectiles descriptions
+	Class responsible for instantiating projectiles in the world
 */
 class ShootingSystem : public Hori::System
 {

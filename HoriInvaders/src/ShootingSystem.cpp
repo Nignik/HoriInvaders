@@ -6,6 +6,7 @@
 #include <Core/Sprite.h>
 #include <Core/Transform.h>
 #include <Core/Renderer.h>
+#include <Core/Collider.h>
 
 ShootingSystem::ShootingSystem()
 {
@@ -59,9 +60,17 @@ Hori::Entity ShootingSystem::Shoot(Projectile& projectile)
 {
 	auto& world = Hori::World::GetInstance();
 
+	Hori::Transform transform = {
+		.position = { 300.0f, 300.0f },
+		.rotation = 0.f,
+		.scale = { 25.0f, 25.0f }
+	};
+	Hori::SphereCollider collider(transform, true);
+
 	const auto& projEntity = world.CreateEntity();
 	world.AddComponent(projEntity, Hori::Sprite());
-	world.AddComponent(projEntity, Hori::Transform({ 300.0f, 300.0f }, 0.0f, { 25.0f, 25.0f }));
+	world.AddComponent(projEntity, transform);
+	world.AddComponent(projEntity, collider);
 	world.AddComponent(projEntity, projectile.velocity);
 	world.AddComponent(projEntity, projectile.texture);
 	world.AddComponent(projEntity, projectile.shader);
