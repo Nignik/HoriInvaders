@@ -10,6 +10,7 @@
 #include <Core/ResourceManager.h>
 
 #include "HealthComponent.h"
+#include "LayerComponent.h"
 
 struct Player
 {
@@ -23,6 +24,7 @@ public:
 		world.AddComponent(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
 		world.AddComponent(entity, HealthComponent(health));
 
+		world.AddComponent(entity, LayerComponent({"player"}));
 		world.AddComponent(entity, Hori::Sprite());
 		world.AddComponent(entity, Hori::Controller());
 		world.AddComponent(entity, Hori::SphereCollider(transform));
