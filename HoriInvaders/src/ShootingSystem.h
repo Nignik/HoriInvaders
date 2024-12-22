@@ -16,6 +16,6 @@ public:
 	void Update(float deltaTime) override;
 
 private:
-	Hori::Entity Shoot(Projectile& projectile);
+	Hori::Entity Shoot(ProjectileBlueprint& projectile);
 
 };

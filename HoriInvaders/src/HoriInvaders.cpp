@@ -11,9 +11,12 @@
 
 #include "Gun.h"
 #include "ShootingSystem.h"
-#include "ProjectileFactory.h"
+#include "ProjectileFactoryComponent.h"
 #include "Player.h"
+#include "EnemyBlueprint.h"
 #include "DamageSystem.h"
+#include "EnemyFactoryComponent.h"
+#include "EnemySpawnerSystem.h"
 
 using namespace std;
 
@@ -28,28 +31,16 @@ int main()
 	// BAD !!!!!!!!!! Damage system is not guaranteed to execute after the collision system
 	world.AddSystem<DamageSystem>(DamageSystem());
 	world.AddSystem<ShootingSystem>(ShootingSystem());
+	world.AddSystem<EnemySpawnerSystem>(EnemySpawnerSystem());
 
-	Hori::Transform playerTransform = {
-		.position = {400.0f, 400.0f},
-		.rotation = 0.0f,
-		.scale = {100.0f, 100.0f}
-	};
-	Player player(playerTransform, 500.0f, 50);
+	auto playerInfo = YAML::LoadFile("data/player.yaml");
+	Player player(playerInfo["player"]);
 
-	Hori::Transform enemyTransform = {
-		.position = {100.0f, 100.0f},
-		.rotation = 0.0f,
-		.scale = {50.0f, 50.0f}
-	};
-	auto guns = YAML::LoadFile("data/guns.yaml");
-	const auto& enemy = world.CreateEntity();
-	world.AddComponent(enemy, Hori::Sprite());
-	world.AddComponent(enemy, Gun(guns["base_gun"]));
-	world.AddComponent(enemy, ProjectileFactory());
-	world.AddComponent(enemy, enemyTransform);
-	world.AddComponent(enemy, Hori::SphereCollider(enemyTransform, false));
-	world.AddComponent(enemy, Hori::LoadShaderFromFile("shaders/sprite.vs", "shaders/sprite.fs"));
-	world.AddComponent(enemy, Hori::LoadTextureFromFile("resources/textures/awesomeface.png", true));
+	auto enemyBlueprints = YAML::LoadFile("data/enemies.yaml");
+	std::shared_ptr<EnemyBlueprint> enemyBlueprint = std::make_shared<EnemyBlueprint>(enemyBlueprints["base_enemy"]);
+
+	auto enemySpawner = world.CreateEntity();
+	world.AddComponent(enemySpawner, EnemyFactoryComponent(enemyBlueprint));
 
 	engine.Run();
 

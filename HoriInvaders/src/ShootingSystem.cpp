@@ -1,6 +1,6 @@
 #include "ShootingSystem.h"
 #include "Gun.h"
-#include "ProjectileFactory.h"
+#include "ProjectileFactoryComponent.h"
 #include "LayerComponent.h"
 
 #include <World.h>
@@ -22,7 +22,7 @@ void ShootingSystem::Update(float deltaTime)
 	for (const auto& entity : world.GetEntitiesWithComponents<Gun>())
 	{
 		auto gun = world.GetComponent<Gun>(entity);
-		auto factory = world.GetComponent<ProjectileFactory>(entity);
+		auto factory = world.GetComponent<ProjectileFactoryComponent>(entity);
 		for (int i = 0; i < gun->projectiles.size(); i++)
 		{
 			auto& projectile = gun->projectiles[i];
@@ -57,7 +57,7 @@ void ShootingSystem::Update(float deltaTime)
 }
 
 // Creates entity in the world
-Hori::Entity ShootingSystem::Shoot(Projectile& projectile)
+Hori::Entity ShootingSystem::Shoot(ProjectileBlueprint& projectile)
 {
 	auto& world = Hori::World::GetInstance();
 

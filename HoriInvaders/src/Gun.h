@@ -13,6 +13,8 @@ A gun spawns projectiles. Projectiles are new entities.
 
 struct Gun
 {
+	Gun() = default;
+
 	Gun(YAML::Node gunData)
 	{
 		auto projs = gunData["projectiles"];
@@ -25,6 +27,6 @@ struct Gun
 		reload.resize(projectiles.size());
 	}
 
-	std::vector<Projectile> projectiles{};
+	std::vector<ProjectileBlueprint> projectiles{};
 	std::vector<float> reload{};
 };

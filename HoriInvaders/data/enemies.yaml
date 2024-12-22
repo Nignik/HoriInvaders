@@ -1,0 +1,7 @@
+base_enemy:
+  weapon: "base_gun"
+  health: 50
+  speed: 300.0
+  direction: 0.0
+  sprite: "resources/textures/awesomeface.png"
+  shader: "shaders/sprite"
