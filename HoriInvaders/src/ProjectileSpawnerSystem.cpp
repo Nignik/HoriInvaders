@@ -1,4 +1,4 @@
-#include "ShootingSystem.h"
+#include "ProjectileSpawnerSystem.h"
 #include "Gun.h"
 #include "ProjectileFactoryComponent.h"
 #include "LayerComponent.h"
@@ -9,12 +9,12 @@
 #include <Core/Renderer.h>
 #include <Core/Collider.h>
 
-ShootingSystem::ShootingSystem()
+ProjectileSpawnerSystem::ProjectileSpawnerSystem()
 {
 
 }
 
-void ShootingSystem::Update(float deltaTime)
+void ProjectileSpawnerSystem::Update(float deltaTime)
 {
 	auto& world = Hori::World::GetInstance();
 
@@ -30,7 +30,7 @@ void ShootingSystem::Update(float deltaTime)
 			if (gun->reload[i] > 0)
 				continue;
 			
-			auto projEntity = Shoot(projectile);
+			auto projEntity = Spawn(projectile);
 			gun->reload[i] = projectile.cooldown;
 			
 			factory->projectileEntities.insert(projEntity);
@@ -57,7 +57,7 @@ void ShootingSystem::Update(float deltaTime)
 }
 
 // Creates entity in the world
-Hori::Entity ShootingSystem::Shoot(ProjectileBlueprint& projectile)
+Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile)
 {
 	auto& world = Hori::World::GetInstance();
 

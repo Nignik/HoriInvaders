@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 
 #include "Gun.h"
-#include "ShootingSystem.h"
+#include "ProjectileSpawnerSystem.h"
 #include "ProjectileFactoryComponent.h"
 #include "Player.h"
 #include "EnemyBlueprint.h"
@@ -30,7 +30,7 @@ int main()
 
 	// BAD !!!!!!!!!! Damage system is not guaranteed to execute after the collision system
 	world.AddSystem<DamageSystem>(DamageSystem());
-	world.AddSystem<ShootingSystem>(ShootingSystem());
+	world.AddSystem<ProjectileSpawnerSystem>(ProjectileSpawnerSystem());
 	world.AddSystem<EnemySpawnerSystem>(EnemySpawnerSystem());
 
 	auto playerInfo = YAML::LoadFile("data/player.yaml");

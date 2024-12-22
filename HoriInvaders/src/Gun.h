@@ -5,7 +5,7 @@
 #include <yaml-cpp/yaml.h>
 #include <glm/glm.hpp>
 
-#include "Projectile.h"
+#include "ProjectileBlueprint.h"
 
 /*
 A gun spawns projectiles. Projectiles are new entities.

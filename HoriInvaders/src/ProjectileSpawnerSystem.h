@@ -3,19 +3,19 @@
 #include <Core/System.h>
 #include <Entity.h>
 
-#include "Projectile.h"
+#include "ProjectileBlueprint.h"
 
 /*
 	Class responsible for instantiating projectiles in the world
 */
-class ShootingSystem : public Hori::System
+class ProjectileSpawnerSystem : public Hori::System
 {
 public:
-	ShootingSystem();
+	ProjectileSpawnerSystem();
 
 	void Update(float deltaTime) override;
 
 private:
-	Hori::Entity Shoot(ProjectileBlueprint& projectile);
+	Hori::Entity Spawn(ProjectileBlueprint& projectile);
 
 };
