@@ -9,6 +9,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
+#include "DamageComponent.h"
+
 namespace fs = std::filesystem;
 
 struct ProjectileBlueprint
@@ -20,7 +22,7 @@ struct ProjectileBlueprint
 		texture = Hori::LoadTextureFromFile(spritePath, true);
 		shader = Hori::LoadShaderFromFile(shader_name.replace_extension(".vs"), shader_name.replace_extension(".fs"));
 
-		damage = projectileData["damage"].as<float>();
+		damage = DamageComponent(projectileData["damage"].as<float>());
 		cooldown = projectileData["cooldown"].as<float>();
 		velocity.speed = projectileData["speed"].as<float>();
 		velocity.dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(projectileData["direction"].as<float>()));
@@ -33,8 +35,9 @@ struct ProjectileBlueprint
 		}*/
 	}
 
-	float damage{};
+	
 	float cooldown{};
+	DamageComponent damage{};
 	Hori::VelocityComponent velocity{};
 	Hori::Texture2D texture{};
 	Hori::Shader shader{};

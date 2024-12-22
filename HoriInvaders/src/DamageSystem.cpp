@@ -1,6 +1,7 @@
 #include "DamageSystem.h"
 #include "HealthComponent.h"
 #include "LayerComponent.h"
+#include "DamageComponent.h"
 
 #include <Core/EventManager.h>
 #include <World.h>
@@ -24,19 +25,19 @@ void DamageSystem::Update(float deltaTime)
 		{
 			auto health = world.GetComponent<HealthComponent>(entityA);
 			auto layerA = world.GetComponent<LayerComponent>(entityA);
+			auto damage = world.GetComponent<DamageComponent>(entityB);
 			auto layerB = world.GetComponent<LayerComponent>(entityB);
 			
 			// Swap the entities so that next loop checks them in reverse
 			std::swap(entityA, entityB);
 
-			if (health == nullptr || layerA == nullptr || layerB == nullptr)
+			if (health == nullptr || layerA == nullptr || damage == nullptr || layerB == nullptr)
 				continue;
 				
 			if (!layerA->layers.contains("player") || !layerB->layers.contains("projectile"))
 				continue;
-				
 
-			health->value -= 10;
+			health->value -= (int)damage->value;
 			std::cout << health->value << std::endl;
 		}
 

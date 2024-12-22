@@ -75,6 +75,7 @@ Hori::Entity ShootingSystem::Shoot(ProjectileBlueprint& projectile)
 	world.AddComponent(projEntity, projectile.velocity);
 	world.AddComponent(projEntity, projectile.texture);
 	world.AddComponent(projEntity, projectile.shader);
+	world.AddComponent(projEntity, projectile.damage);
 	world.AddComponent(projEntity, LayerComponent({ "projectile" }));
 
 	return projEntity;
