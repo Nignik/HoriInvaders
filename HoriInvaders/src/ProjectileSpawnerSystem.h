@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/System.h>
+#include <Core/Transform.h>
 #include <Entity.h>
 
 #include "ProjectileBlueprint.h"
@@ -16,6 +17,6 @@ public:
 	void Update(float deltaTime) override;
 
 private:
-	Hori::Entity Spawn(ProjectileBlueprint& projectile);
+	Hori::Entity Spawn(ProjectileBlueprint& projectile, glm::vec2 position);
 
 };

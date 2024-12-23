@@ -19,10 +19,10 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 	auto& world = Hori::World::GetInstance();
 
 	// For every entity that has a gun component shoot all projectiles
-	for (const auto& entity : world.GetEntitiesWithComponents<Gun>())
+	for (const auto& shooterEntity : world.GetEntitiesWithComponents<Gun>())
 	{
-		auto gun = world.GetComponent<Gun>(entity);
-		auto factory = world.GetComponent<ProjectileFactoryComponent>(entity);
+		auto gun = world.GetComponent<Gun>(shooterEntity);
+		auto factory = world.GetComponent<ProjectileFactoryComponent>(shooterEntity);
 		for (int i = 0; i < gun->projectiles.size(); i++)
 		{
 			auto& projectile = gun->projectiles[i];
@@ -30,7 +30,10 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 			if (gun->reload[i] > 0)
 				continue;
 			
-			auto projEntity = Spawn(projectile);
+			auto shooterTransform = world.GetComponent<Hori::Transform>(shooterEntity);
+			assert(shooterTransform != nullptr && "Entity with a gun doesn't have a transform");
+
+			auto projEntity = Spawn(projectile, shooterTransform->position);
 			gun->reload[i] = projectile.cooldown;
 			
 			factory->projectileEntities.insert(projEntity);
@@ -57,12 +60,12 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 }
 
 // Creates entity in the world
-Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile)
+Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile, glm::vec2 position)
 {
 	auto& world = Hori::World::GetInstance();
 
 	Hori::Transform transform = {
-		.position = { 300.0f, 300.0f },
+		.position = position,
 		.rotation = 0.f,
 		.scale = { 25.0f, 25.0f }
 	};
