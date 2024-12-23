@@ -5,9 +5,20 @@
 #include <Core/Texture.h>
 #include <Core/Shader.h>
 #include <Core/VelocityComponent.h>
+#include <Core/EventManager.h>
 
 #include "Gun.h"
 #include "HealthComponent.h"
+
+struct EnemyDeathEvent : public Hori::IEvent
+{
+	EnemyDeathEvent(Hori::Entity deadEnemy)
+		: deadEnemy(deadEnemy)
+	{
+	}
+
+	Hori::Entity deadEnemy;
+};
 
 struct EnemyBlueprint
 {

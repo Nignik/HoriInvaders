@@ -26,6 +26,7 @@ void EnemySpawnerSystem::Update(float deltaTime)
 		if (factory->cooldown <= 0.f)
 		{
 			auto entt = Spawn(factory->blueprint);
+			factory->entities.insert(entt);
 			factory->cooldown = factory->baseCooldown;
 		}
 		else

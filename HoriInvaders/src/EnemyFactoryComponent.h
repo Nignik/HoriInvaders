@@ -17,6 +17,7 @@ struct EnemyFactoryComponent
 	{
 
 	}
+
 	std::shared_ptr<EnemyBlueprint> blueprint;
 	float baseCooldown = 5.f;
 	float cooldown = 0.f;

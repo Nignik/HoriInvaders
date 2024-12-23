@@ -17,6 +17,7 @@
 #include "DamageSystem.h"
 #include "EnemyFactoryComponent.h"
 #include "EnemySpawnerSystem.h"
+#include "DeathSystem.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ int main()
 	world.AddSystem<DamageSystem>(DamageSystem());
 	world.AddSystem<ProjectileSpawnerSystem>(ProjectileSpawnerSystem());
 	world.AddSystem<EnemySpawnerSystem>(EnemySpawnerSystem());
+	world.AddSystem<DeathSystem>(DeathSystem());
 
 	auto playerInfo = YAML::LoadFile("data/player.yaml");
 	Player player(playerInfo["player"]);
