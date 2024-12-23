@@ -1,7 +1,8 @@
 #include "ProjectileSpawnerSystem.h"
 #include "Gun.h"
 #include "ProjectileFactoryComponent.h"
-#include "LayerComponent.h"
+#include "EnemyBlueprint.h"
+#include "Player.h"
 
 #include <World.h>
 #include <Core/Sprite.h>
@@ -75,6 +76,7 @@ Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile, Hor
 	Hori::SphereCollider collider(transform, true);
 
 	const auto& projEntity = world.CreateEntity();
+	
 	world.AddComponent(projEntity, Hori::Sprite());
 	world.AddComponent(projEntity, transform);
 	world.AddComponent(projEntity, collider);
@@ -83,16 +85,10 @@ Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile, Hor
 	world.AddComponent(projEntity, projectile.shader);
 	world.AddComponent(projEntity, projectile.damage);
 
-	auto shooterLayerComponent = world.GetComponent<LayerComponent>(shooterEntity);
-	assert(shooterLayerComponent != nullptr && "Entity with a gun doesn't have a layer component");
-
-	LayerComponent layerComp({ "projectile" });
-	if (shooterLayerComponent->Contains({ "enemy" }))
-		layerComp.layers.insert({ "enemy" });
-	else if (shooterLayerComponent->Contains({ "player" }))
-		layerComp.layers.insert({ "player" });
-
-	world.AddComponent(projEntity, layerComp);
+	if (world.HasComponents<EnemyComponent>(shooterEntity))
+		world.AddComponent(projEntity, EnemyProjectileComponent());
+	else if (world.HasComponents<PlayerComponent>(shooterEntity))
+		world.AddComponent(projEntity, PlayerProjectileComponent());
 
 	return projEntity;
 }

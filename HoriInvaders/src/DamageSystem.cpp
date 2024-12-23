@@ -1,8 +1,8 @@
 #include "DamageSystem.h"
 #include "HealthComponent.h"
-#include "LayerComponent.h"
 #include "DamageComponent.h"
 #include "EnemyFactoryComponent.h"
+#include "Player.h"
 
 #include <Core/EventManager.h>
 #include <World.h>
@@ -24,24 +24,21 @@ void DamageSystem::Update(float deltaTime)
 		for (int i = 0; i < 2; i++)
 		{
 			auto health = world.GetComponent<HealthComponent>(entityA);
-			auto layerA = world.GetComponent<LayerComponent>(entityA);
 			auto damage = world.GetComponent<DamageComponent>(entityB);
-			auto layerB = world.GetComponent<LayerComponent>(entityB);
 			
-			// Maybe could be nicer, this is kind of ugly
-			if (health == nullptr || layerA == nullptr || damage == nullptr || layerB == nullptr)
+			if (health == nullptr || damage == nullptr)
 			{
 				std::swap(entityA, entityB);
 				continue;
 			}
 
-			if ((layerA->Contains({ "player" }) && layerB->Contains({ "projectile", "enemy" })) ||
-				(layerA->Contains({ "enemy" }) && layerB->Contains({ "projectile", "player" })))
+			if ((world.HasComponents<PlayerComponent>(entityA) && world.HasComponents<EnemyProjectileComponent>(entityB)) ||
+				(world.HasComponents<EnemyComponent>(entityA) && world.HasComponents<PlayerProjectileComponent>(entityB)))
 			{
 				health->value -= (int)damage->value;
 				std::cout << health->value << std::endl;
 
-				if (health->value <= 0 && layerA->Contains({"enemy"}))
+				if (health->value <= 0 && world.HasComponents<EnemyComponent>(entityA))
 				{
 					eventMng.AddEvents<EnemyDeathEvent>(entityA);
 				}

@@ -10,11 +10,17 @@
 #include <Core/Controller.h>
 #include <Core/Collider.h>
 #include <Core/ResourceManager.h>
+#include <Core/Renderer.h>
 
 #include "HealthComponent.h"
-#include "LayerComponent.h"
+#include "ProjectileFactoryComponent.h"
 
 namespace fs = std::filesystem;
+
+struct PlayerComponent
+{
+
+};
 
 struct Player
 {
@@ -27,7 +33,6 @@ public:
 		world.AddComponent(entity, transform);
 		world.AddComponent(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
 		world.AddComponent(entity, HealthComponent(health));
-		world.AddComponent(entity, LayerComponent({"player"}));
 		world.AddComponent(entity, Hori::Sprite());
 		world.AddComponent(entity, Hori::Controller());
 		world.AddComponent(entity, Hori::SphereCollider(transform));
@@ -51,12 +56,12 @@ public:
 		float speed = playerInfo["speed"].as<float>();
 		int health = playerInfo["health"].as<int>();
 
+		world.AddComponent(entity, PlayerComponent());
 		world.AddComponent(entity, transform);
 		world.AddComponent(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
 		world.AddComponent(entity, HealthComponent(health));
 		world.AddComponent(entity, Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs")));
 		world.AddComponent(entity, Hori::LoadTextureFromFile(spritePath, true));
-		world.AddComponent(entity, LayerComponent({ "player" }));
 		world.AddComponent(entity, Hori::Sprite());
 		world.AddComponent(entity, Hori::Controller());
 		world.AddComponent(entity, Hori::SphereCollider(transform));

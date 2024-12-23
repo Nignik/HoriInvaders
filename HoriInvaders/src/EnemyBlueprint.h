@@ -20,6 +20,11 @@ struct EnemyDeathEvent : public Hori::IEvent
 	Hori::Entity deadEnemy;
 };
 
+struct EnemyComponent
+{
+
+};
+
 struct EnemyBlueprint
 {
 	EnemyBlueprint(YAML::Node blueprintInfo)

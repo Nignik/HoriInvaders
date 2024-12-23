@@ -13,6 +13,17 @@
 
 namespace fs = std::filesystem;
 
+// Not sure if this is the best way, but it's simple
+struct EnemyProjectileComponent
+{
+
+};
+
+struct PlayerProjectileComponent
+{
+
+};
+
 struct ProjectileBlueprint
 {
 	ProjectileBlueprint(YAML::Node projectileData)

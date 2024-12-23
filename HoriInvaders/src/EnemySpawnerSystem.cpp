@@ -6,7 +6,6 @@
 #include <Core/Renderer.h>
 #include <Core/Collider.h>
 
-#include "LayerComponent.h"
 #include "EnemyFactoryComponent.h"
 #include "ProjectileFactoryComponent.h"
 
@@ -67,13 +66,13 @@ Hori::Entity EnemySpawnerSystem::Spawn(std::shared_ptr<EnemyBlueprint> enemy)
 	Hori::SphereCollider collider(transform, false);
 
 	const auto& entt = world.CreateEntity();
+	world.AddComponent(entt, EnemyComponent());
 	world.AddComponent(entt, Hori::Sprite());
 	world.AddComponent(entt, transform);
 	world.AddComponent(entt, collider);
 	world.AddComponent(entt, enemy->velocity);
 	world.AddComponent(entt, enemy->sprite);
 	world.AddComponent(entt, enemy->shader);
-	world.AddComponent(entt, LayerComponent({ "enemy" }));
 	world.AddComponent(entt, ProjectileFactoryComponent());
 	world.AddComponent(entt, enemy->gun);
 	world.AddComponent(entt, enemy->health);
