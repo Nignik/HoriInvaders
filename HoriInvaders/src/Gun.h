@@ -11,11 +11,11 @@
 A gun spawns projectiles. Projectiles are new entities.
 */
 
-struct Gun
+struct GunComponent
 {
-	Gun() = default;
+	GunComponent() = default;
 
-	Gun(YAML::Node gunData)
+	GunComponent(YAML::Node gunData)
 	{
 		auto projs = gunData["projectiles"];
 		projectiles.reserve(projectiles.size());

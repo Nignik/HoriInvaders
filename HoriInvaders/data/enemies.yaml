@@ -1,5 +1,5 @@
 base_enemy:
-  weapon: "base_gun"
+  weapon: "enemy_gun"
   health: 50
   speed: 300.0
   direction: 90.0

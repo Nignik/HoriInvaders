@@ -8,6 +8,7 @@
 #include <Core/Transform.h>
 #include <Core/Renderer.h>
 #include <Core/Collider.h>
+#include <cmath>
 
 ProjectileSpawnerSystem::ProjectileSpawnerSystem()
 {
@@ -19,10 +20,12 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 	auto& world = Hori::World::GetInstance();
 
 	// For every entity that has a gun component shoot all projectiles
-	for (const auto& shooterEntity : world.GetEntitiesWithComponents<Gun>())
+	for (auto shooterEntity : world.GetEntitiesWithComponents<GunComponent>())
 	{
-		auto gun = world.GetComponent<Gun>(shooterEntity);
+		auto gun = world.GetComponent<GunComponent>(shooterEntity);
 		auto factory = world.GetComponent<ProjectileFactoryComponent>(shooterEntity);
+		assert(factory != nullptr && "Entity has a gun but doesn't have projectile factory component: not allowed");
+
 		for (int i = 0; i < gun->projectiles.size(); i++)
 		{
 			auto& projectile = gun->projectiles[i];
@@ -30,10 +33,7 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 			if (gun->reload[i] > 0)
 				continue;
 			
-			auto shooterTransform = world.GetComponent<Hori::Transform>(shooterEntity);
-			assert(shooterTransform != nullptr && "Entity with a gun doesn't have a transform");
-
-			auto projEntity = Spawn(projectile, shooterTransform->position);
+			auto projEntity = Spawn(projectile, shooterEntity);
 			gun->reload[i] = projectile.cooldown;
 			
 			factory->projectileEntities.insert(projEntity);
@@ -60,13 +60,16 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 }
 
 // Creates entity in the world
-Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile, glm::vec2 position)
+Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile, Hori::Entity& shooterEntity)
 {
 	auto& world = Hori::World::GetInstance();
 
+	auto shooterTransform = world.GetComponent<Hori::Transform>(shooterEntity);
+	assert(shooterTransform != nullptr && "Entity with a gun doesn't have a transform");
+
 	Hori::Transform transform = {
-		.position = position,
-		.rotation = 0.f,
+		.position = shooterTransform->position,
+		.rotation = glm::degrees(std::atan2(projectile.velocity.dir.x , projectile.velocity.dir.y)),
 		.scale = { 25.0f, 25.0f }
 	};
 	Hori::SphereCollider collider(transform, true);
@@ -79,7 +82,17 @@ Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile, glm
 	world.AddComponent(projEntity, projectile.texture);
 	world.AddComponent(projEntity, projectile.shader);
 	world.AddComponent(projEntity, projectile.damage);
-	world.AddComponent(projEntity, LayerComponent({ "projectile" }));
+
+	auto shooterLayerComponent = world.GetComponent<LayerComponent>(shooterEntity);
+	assert(shooterLayerComponent != nullptr && "Entity with a gun doesn't have a layer component");
+
+	LayerComponent layerComp({ "projectile" });
+	if (shooterLayerComponent->Contains({ "enemy" }))
+		layerComp.layers.insert({ "enemy" });
+	else if (shooterLayerComponent->Contains({ "player" }))
+		layerComp.layers.insert({ "player" });
+
+	world.AddComponent(projEntity, layerComp);
 
 	return projEntity;
 }

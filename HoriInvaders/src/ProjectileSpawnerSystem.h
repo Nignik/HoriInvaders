@@ -17,6 +17,6 @@ public:
 	void Update(float deltaTime) override;
 
 private:
-	Hori::Entity Spawn(ProjectileBlueprint& projectile, glm::vec2 position);
+	Hori::Entity Spawn(ProjectileBlueprint& projectile, Hori::Entity& shooterEntity);
 
 };

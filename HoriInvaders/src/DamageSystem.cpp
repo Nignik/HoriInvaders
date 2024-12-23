@@ -33,12 +33,13 @@ void DamageSystem::Update(float deltaTime)
 
 			if (health == nullptr || layerA == nullptr || damage == nullptr || layerB == nullptr)
 				continue;
-				
-			if (!layerA->layers.contains("player") || !layerB->layers.contains("projectile"))
-				continue;
 
-			health->value -= (int)damage->value;
-			std::cout << health->value << std::endl;
+			if ((layerA->Contains({ "player" }) && layerB->Contains({ "projectile", "enemy" })) ||
+				(layerA->Contains({ "enemy" }) && layerB->Contains({ "projectile", "player" })))
+			{
+				health->value -= (int)damage->value;
+				std::cout << health->value << std::endl;
+			}
 		}
 
 		event = eventMng.PopEvent<Hori::TriggerEvent>();

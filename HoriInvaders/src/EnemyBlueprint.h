@@ -7,6 +7,7 @@
 #include <Core/VelocityComponent.h>
 
 #include "Gun.h"
+#include "HealthComponent.h"
 
 struct EnemyBlueprint
 {
@@ -25,17 +26,16 @@ struct EnemyBlueprint
 			std::cout << key.first.as<std::string>() << std::endl;
 		}
 		std::string gunName = blueprintInfo["weapon"].as<std::string>();
-		gun = guns[gunName];
+		gun = GunComponent(guns[gunName]);
 
-		health = blueprintInfo["health"].as<int>();
+		health = HealthComponent(blueprintInfo["health"].as<int>());
 		velocity.speed = blueprintInfo["speed"].as<float>();
 		velocity.dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(blueprintInfo["direction"].as<float>()));
 	}
 
-	Gun gun;
+	GunComponent gun;
 	Hori::Texture2D sprite{};
 	Hori::Shader shader{};
 	Hori::VelocityComponent velocity{};
-
-	int health = 0;
+	HealthComponent health{};
 };

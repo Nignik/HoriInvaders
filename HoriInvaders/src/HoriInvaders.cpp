@@ -36,6 +36,9 @@ int main()
 	auto playerInfo = YAML::LoadFile("data/player.yaml");
 	Player player(playerInfo["player"]);
 
+	auto guns = YAML::LoadFile("data/guns.yaml");
+	world.AddComponent<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
+
 	auto enemyBlueprints = YAML::LoadFile("data/enemies.yaml");
 	std::shared_ptr<EnemyBlueprint> enemyBlueprint = std::make_shared<EnemyBlueprint>(enemyBlueprints["base_enemy"]);
 

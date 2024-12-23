@@ -60,7 +60,7 @@ Hori::Entity EnemySpawnerSystem::Spawn(std::shared_ptr<EnemyBlueprint> enemy)
 
 	Hori::Transform transform = {
 		.position = { 100.0f, 100.0f },
-		.rotation = 0.f,
+		.rotation = 180.f,
 		.scale = { 25.0f, 25.0f }
 	};
 	Hori::SphereCollider collider(transform, false);
@@ -75,6 +75,7 @@ Hori::Entity EnemySpawnerSystem::Spawn(std::shared_ptr<EnemyBlueprint> enemy)
 	world.AddComponent(entt, LayerComponent({ "enemy" }));
 	world.AddComponent(entt, ProjectileFactoryComponent());
 	world.AddComponent(entt, enemy->gun);
+	world.AddComponent(entt, enemy->health);
 
 	return entt;
 }
