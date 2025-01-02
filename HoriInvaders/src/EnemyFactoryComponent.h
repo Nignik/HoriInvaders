@@ -4,7 +4,7 @@
 #include <set>
 #include <Entity.h>
 
-#include "EnemyBlueprint.h"
+#include "Enemy.h"
 
 /*
 *	Stores enemy entities that it spawned
@@ -12,14 +12,12 @@
 */
 struct EnemyFactoryComponent
 {
-	EnemyFactoryComponent(std::shared_ptr<EnemyBlueprint> blueprint, float baseCooldown = 5.f, float cooldown = 0.f)
-		: blueprint(blueprint)
+	EnemyFactoryComponent(Hori::Entity enemyPrototype, float baseCooldown = 5.f, float cooldown = 0.f)
+		: enemyPrototype(enemyPrototype)
 	{
 
 	}
 
-	std::shared_ptr<EnemyBlueprint> blueprint;
-	float baseCooldown = 5.f;
-	float cooldown = 0.f;
+	Hori::Entity enemyPrototype;
 	std::set<Hori::Entity> entities{};
 };

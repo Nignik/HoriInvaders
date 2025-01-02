@@ -1,7 +1,7 @@
 #include "ProjectileSpawnerSystem.h"
 #include "Gun.h"
 #include "ProjectileFactoryComponent.h"
-#include "EnemyBlueprint.h"
+#include "Enemy.h"
 #include "Player.h"
 #include "CooldownComponent.h"
 
@@ -30,7 +30,7 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 
 		for (auto& projectilePrototype : gun->projectilePrototypes)
 		{
-			auto cooldownComponent = world.GetComponent<CooldownComponent>(projectilePrototype);
+			auto cooldownComponent = world.GetComponent<CooldownComponent>(gun->reaload[projectilePrototype]);
 			if (!cooldownComponent->ready)
 				continue;
 			cooldownComponent->ready = false;

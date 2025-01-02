@@ -13,7 +13,7 @@
 #include "ProjectileSpawnerSystem.h"
 #include "ProjectileFactoryComponent.h"
 #include "Player.h"
-#include "EnemyBlueprint.h"
+#include "Enemy.h"
 #include "DamageSystem.h"
 #include "EnemyFactoryComponent.h"
 #include "EnemySpawnerSystem.h"
@@ -44,10 +44,10 @@ int main()
 	world.AddComponents<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
 
 	auto enemyBlueprints = YAML::LoadFile("data/enemies.yaml");
-	std::shared_ptr<EnemyBlueprint> enemyBlueprint = std::make_shared<EnemyBlueprint>(enemyBlueprints["base_enemy"]);
+	auto enemyPrototype = createEnemyPrototype(enemyBlueprints["base_enemy"]);
 
 	auto enemySpawner = world.CreateEntity();
-	world.AddComponents(enemySpawner, EnemyFactoryComponent(enemyBlueprint));
+	world.AddComponents(enemySpawner, EnemyFactoryComponent(enemyPrototype), CooldownComponent(5.f));
 
 	engine.Run();
 

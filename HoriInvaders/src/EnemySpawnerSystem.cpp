@@ -22,28 +22,24 @@ void EnemySpawnerSystem::Update(float deltaTime)
 	for (const auto& factoryEntity : world.GetEntitiesWithComponents<EnemyFactoryComponent>())
 	{
 		auto factory = world.GetComponent<EnemyFactoryComponent>(factoryEntity);
-		if (factory->cooldown <= 0.f)
+		auto cd = world.GetComponent<CooldownComponent>(factoryEntity);
+		if (cd->ready)
 		{
-			auto entt = Spawn(factory->blueprint);
-			factory->entities.insert(entt);
-			factory->cooldown = factory->baseCooldown;
+			auto enemy = Spawn(factory->enemyPrototype);
+			factory->entities.insert(enemy);
+			cd->ready = false;
 		}
-		else
-		{
-			factory->cooldown -= deltaTime;
-		}
-		
 
 		// Check for every enemy, whether it has left the screen, if so delete
 		std::vector<Hori::Entity> removed;
-		for (auto& enemyEntity : factory->entities)
+		for (auto& enemy : factory->entities)
 		{
-			auto& position = world.GetComponent<Hori::Transform>(enemyEntity)->position;
+			auto& position = world.GetComponent<Hori::Transform>(enemy)->position;
 			const auto& screenSize = Hori::Renderer::GetInstance().GetScreenSize();
 			if (position.x < 0 || position.x > screenSize.x || position.y < 0 || position.y > screenSize.y)
 			{
-				world.RemoveEntity(enemyEntity);
-				removed.push_back(enemyEntity);
+				world.RemoveEntity(enemy);
+				removed.push_back(enemy);
 			}
 		}
 
@@ -54,28 +50,10 @@ void EnemySpawnerSystem::Update(float deltaTime)
 	}
 }
 
-Hori::Entity EnemySpawnerSystem::Spawn(std::shared_ptr<EnemyBlueprint> enemy)
+Hori::Entity EnemySpawnerSystem::Spawn(Hori::Entity enemyPrototype)
 {
 	auto& world = Hori::World::GetInstance();
+	auto enemy = world.Clone(enemyPrototype);
 
-	Hori::Transform transform = {
-		.position = { 100.0f, 100.0f },
-		.rotation = 180.f,
-		.scale = { 25.0f, 25.0f }
-	};
-	Hori::SphereCollider collider(transform, false);
-
-	const auto& entt = world.CreateEntity();
-	world.AddComponents(entt, EnemyComponent());
-	world.AddComponents(entt, Hori::Sprite());
-	world.AddComponents(entt, transform);
-	world.AddComponents(entt, collider);
-	world.AddComponents(entt, enemy->velocity);
-	world.AddComponents(entt, enemy->sprite);
-	world.AddComponents(entt, enemy->shader);
-	world.AddComponents(entt, ProjectileFactoryComponent());
-	world.AddComponents(entt, enemy->gun);
-	world.AddComponents(entt, enemy->health);
-
-	return entt;
+	return enemy;
 }

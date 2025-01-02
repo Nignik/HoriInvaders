@@ -5,7 +5,7 @@
 #include <Core/System.h>
 #include <Entity.h>
 
-#include "EnemyBlueprint.h"
+#include "Enemy.h"
 
 /*
 	Class responsible for instantiating enemies in the world
@@ -18,6 +18,6 @@ public:
 	void Update(float deltaTime) override;
 
 private:
-	Hori::Entity Spawn(std::shared_ptr<EnemyBlueprint> enemy);
+	Hori::Entity Spawn(Hori::Entity enemyPrototype);
 
 };
