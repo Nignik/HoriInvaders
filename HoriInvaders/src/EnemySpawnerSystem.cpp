@@ -66,16 +66,16 @@ Hori::Entity EnemySpawnerSystem::Spawn(std::shared_ptr<EnemyBlueprint> enemy)
 	Hori::SphereCollider collider(transform, false);
 
 	const auto& entt = world.CreateEntity();
-	world.AddComponent(entt, EnemyComponent());
-	world.AddComponent(entt, Hori::Sprite());
-	world.AddComponent(entt, transform);
-	world.AddComponent(entt, collider);
-	world.AddComponent(entt, enemy->velocity);
-	world.AddComponent(entt, enemy->sprite);
-	world.AddComponent(entt, enemy->shader);
-	world.AddComponent(entt, ProjectileFactoryComponent());
-	world.AddComponent(entt, enemy->gun);
-	world.AddComponent(entt, enemy->health);
+	world.AddComponents(entt, EnemyComponent());
+	world.AddComponents(entt, Hori::Sprite());
+	world.AddComponents(entt, transform);
+	world.AddComponents(entt, collider);
+	world.AddComponents(entt, enemy->velocity);
+	world.AddComponents(entt, enemy->sprite);
+	world.AddComponents(entt, enemy->shader);
+	world.AddComponents(entt, ProjectileFactoryComponent());
+	world.AddComponents(entt, enemy->gun);
+	world.AddComponents(entt, enemy->health);
 
 	return entt;
 }

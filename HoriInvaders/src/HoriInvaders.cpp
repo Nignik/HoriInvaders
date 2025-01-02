@@ -18,6 +18,7 @@
 #include "EnemyFactoryComponent.h"
 #include "EnemySpawnerSystem.h"
 #include "DeathSystem.h"
+#include "CooldownSystem.h"
 
 using namespace std;
 
@@ -34,18 +35,19 @@ int main()
 	world.AddSystem<ProjectileSpawnerSystem>(ProjectileSpawnerSystem());
 	world.AddSystem<EnemySpawnerSystem>(EnemySpawnerSystem());
 	world.AddSystem<DeathSystem>(DeathSystem());
+	world.AddSystem<CooldownSystem>(CooldownSystem());
 
 	auto playerInfo = YAML::LoadFile("data/player.yaml");
 	Player player(playerInfo["player"]);
 
 	auto guns = YAML::LoadFile("data/guns.yaml");
-	world.AddComponent<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
+	world.AddComponents<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
 
 	auto enemyBlueprints = YAML::LoadFile("data/enemies.yaml");
 	std::shared_ptr<EnemyBlueprint> enemyBlueprint = std::make_shared<EnemyBlueprint>(enemyBlueprints["base_enemy"]);
 
 	auto enemySpawner = world.CreateEntity();
-	world.AddComponent(enemySpawner, EnemyFactoryComponent(enemyBlueprint));
+	world.AddComponents(enemySpawner, EnemyFactoryComponent(enemyBlueprint));
 
 	engine.Run();
 

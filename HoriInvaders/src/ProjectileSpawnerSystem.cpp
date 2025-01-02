@@ -3,6 +3,7 @@
 #include "ProjectileFactoryComponent.h"
 #include "EnemyBlueprint.h"
 #include "Player.h"
+#include "CooldownComponent.h"
 
 #include <World.h>
 #include <Core/Sprite.h>
@@ -27,17 +28,15 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 		auto factory = world.GetComponent<ProjectileFactoryComponent>(shooterEntity);
 		assert(factory != nullptr && "Entity has a gun but doesn't have projectile factory component: not allowed");
 
-		for (int i = 0; i < gun->projectiles.size(); i++)
+		for (auto& projectilePrototype : gun->projectilePrototypes)
 		{
-			auto& projectile = gun->projectiles[i];
-			gun->reload[i] -= deltaTime;
-			if (gun->reload[i] > 0)
+			auto cooldownComponent = world.GetComponent<CooldownComponent>(projectilePrototype);
+			if (!cooldownComponent->ready)
 				continue;
+			cooldownComponent->ready = false;
 			
-			auto projEntity = Spawn(projectile, shooterEntity);
-			gun->reload[i] = projectile.cooldown;
-			
-			factory->projectileEntities.insert(projEntity);
+			auto projectile = Spawn(projectilePrototype, shooterEntity);
+			factory->projectileEntities.insert(projectile);
 		}
 
 		// Check for every projectile, whether it has left the screen, if so delete
@@ -61,34 +60,21 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 }
 
 // Creates entity in the world
-Hori::Entity ProjectileSpawnerSystem::Spawn(ProjectileBlueprint& projectile, Hori::Entity& shooterEntity)
+Hori::Entity ProjectileSpawnerSystem::Spawn(Hori::Entity& projectilePrototype, Hori::Entity& shooterEntity)
 {
 	auto& world = Hori::World::GetInstance();
 
 	auto shooterTransform = world.GetComponent<Hori::Transform>(shooterEntity);
 	assert(shooterTransform != nullptr && "Entity with a gun doesn't have a transform");
 
-	Hori::Transform transform = {
-		.position = shooterTransform->position,
-		.rotation = glm::degrees(std::atan2(projectile.velocity.dir.x , projectile.velocity.dir.y)),
-		.scale = { 25.0f, 25.0f }
-	};
-	Hori::SphereCollider collider(transform, true);
-
-	const auto& projEntity = world.CreateEntity();
-	
-	world.AddComponent(projEntity, Hori::Sprite());
-	world.AddComponent(projEntity, transform);
-	world.AddComponent(projEntity, collider);
-	world.AddComponent(projEntity, projectile.velocity);
-	world.AddComponent(projEntity, projectile.texture);
-	world.AddComponent(projEntity, projectile.shader);
-	world.AddComponent(projEntity, projectile.damage);
+	auto projectile = world.Clone(projectilePrototype);
+	world.GetComponent<Hori::Transform>(projectile)->position = shooterTransform->position;
+	world.GetComponent<Hori::SphereCollider>(projectile)->transform = Hori::SphereCollider(*shooterTransform, true).transform;
 
 	if (world.HasComponents<EnemyComponent>(shooterEntity))
-		world.AddComponent(projEntity, EnemyProjectileComponent());
+		world.AddComponents(projectile, EnemyProjectileComponent());
 	else if (world.HasComponents<PlayerComponent>(shooterEntity))
-		world.AddComponent(projEntity, PlayerProjectileComponent());
+		world.AddComponents(projectile, PlayerProjectileComponent());
 
-	return projEntity;
+	return projectile;
 }

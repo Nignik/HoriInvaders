@@ -4,7 +4,7 @@
 #include <Core/Transform.h>
 #include <Entity.h>
 
-#include "ProjectileBlueprint.h"
+#include "Projectile.h"
 
 /*
 	Class responsible for instantiating projectiles in the world
@@ -17,6 +17,6 @@ public:
 	void Update(float deltaTime) override;
 
 private:
-	Hori::Entity Spawn(ProjectileBlueprint& projectile, Hori::Entity& shooterEntity);
+	Hori::Entity Spawn(Hori::Entity& projectilePrototype, Hori::Entity& shooterEntity);
 
 };

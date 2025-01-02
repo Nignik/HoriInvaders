@@ -30,14 +30,14 @@ public:
 	{
 		auto& world = Hori::World::GetInstance();
 
-		world.AddComponent(entity, transform);
-		world.AddComponent(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
-		world.AddComponent(entity, HealthComponent(health));
-		world.AddComponent(entity, Hori::Sprite());
-		world.AddComponent(entity, Hori::Controller());
-		world.AddComponent(entity, Hori::SphereCollider(transform));
-		world.AddComponent(entity, Hori::LoadShaderFromFile("shaders/sprite.vs", "shaders/sprite.fs"));
-		world.AddComponent(entity, Hori::LoadTextureFromFile("resources/textures/awesomeface.png", true));
+		world.AddComponents(entity, transform);
+		world.AddComponents(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
+		world.AddComponents(entity, HealthComponent(health));
+		world.AddComponents(entity, Hori::Sprite());
+		world.AddComponents(entity, Hori::Controller());
+		world.AddComponents(entity, Hori::SphereCollider(transform));
+		world.AddComponents(entity, Hori::LoadShaderFromFile("shaders/sprite.vs", "shaders/sprite.fs"));
+		world.AddComponents(entity, Hori::LoadTextureFromFile("resources/textures/awesomeface.png", true));
 	}
 
 	Player(YAML::Node playerInfo)
@@ -56,16 +56,16 @@ public:
 		float speed = playerInfo["speed"].as<float>();
 		int health = playerInfo["health"].as<int>();
 
-		world.AddComponent(entity, PlayerComponent());
-		world.AddComponent(entity, transform);
-		world.AddComponent(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
-		world.AddComponent(entity, HealthComponent(health));
-		world.AddComponent(entity, Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs")));
-		world.AddComponent(entity, Hori::LoadTextureFromFile(spritePath, true));
-		world.AddComponent(entity, Hori::Sprite());
-		world.AddComponent(entity, Hori::Controller());
-		world.AddComponent(entity, Hori::SphereCollider(transform));
-		world.AddComponent(entity, ProjectileFactoryComponent());
+		world.AddComponents(entity, PlayerComponent());
+		world.AddComponents(entity, transform);
+		world.AddComponents(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
+		world.AddComponents(entity, HealthComponent(health));
+		world.AddComponents(entity, Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs")));
+		world.AddComponents(entity, Hori::LoadTextureFromFile(spritePath, true));
+		world.AddComponents(entity, Hori::Sprite());
+		world.AddComponents(entity, Hori::Controller());
+		world.AddComponents(entity, Hori::SphereCollider(transform));
+		world.AddComponents(entity, ProjectileFactoryComponent());
 	}
 
 

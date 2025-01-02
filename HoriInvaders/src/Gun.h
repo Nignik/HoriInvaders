@@ -5,7 +5,7 @@
 #include <yaml-cpp/yaml.h>
 #include <glm/glm.hpp>
 
-#include "ProjectileBlueprint.h"
+#include "Projectile.h"
 
 /*
 A gun spawns projectiles. Projectiles are new entities.
@@ -18,15 +18,15 @@ struct GunComponent
 	GunComponent(YAML::Node gunData)
 	{
 		auto projs = gunData["projectiles"];
-		projectiles.reserve(projectiles.size());
+		projectilePrototypes.reserve(projectilePrototypes.size());
 		for (auto it = projs.begin(); it != projs.end(); ++it)
 		{
-			projectiles.emplace_back(it->second);
+			projectilePrototypes.emplace_back(createProjectilePrototype(it->second));
 		}
 
-		reload.resize(projectiles.size());
+		reload.resize(projectilePrototypes.size());
 	}
 
-	std::vector<ProjectileBlueprint> projectiles{};
+	std::vector<Hori::Entity> projectilePrototypes{};
 	std::vector<float> reload{};
 };
