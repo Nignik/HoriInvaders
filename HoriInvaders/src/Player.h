@@ -45,9 +45,10 @@ public:
 	{
 		auto& world = Hori::World::GetInstance();
 
-		auto screenDim = Hori::Renderer::GetInstance().GetScreenSize();
+		auto screenDim = Hori::Renderer::GetInstance().GetWindowSize();
+		auto position = glm::vec2{ playerInfo["spawn"][0].as<float>(), playerInfo["spawn"][1].as<float>() };
 		Hori::Transform transform = {
-			.position = {playerInfo["spawn"][0].as<float>() * screenDim.x, playerInfo["spawn"][1].as<float>() * screenDim.y},
+			.position = position,
 			.rotation = 0.0f,
 			.scale = {playerInfo["size"].as<float>(), playerInfo["size"].as<float>()}
 		};

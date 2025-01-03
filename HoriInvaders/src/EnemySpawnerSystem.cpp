@@ -35,8 +35,8 @@ void EnemySpawnerSystem::Update(float deltaTime)
 		for (auto& enemy : factory->entities)
 		{
 			auto& position = world.GetComponent<Hori::Transform>(enemy)->position;
-			const auto& screenSize = Hori::Renderer::GetInstance().GetScreenSize();
-			if (position.x < 0 || position.x > screenSize.x || position.y < 0 || position.y > screenSize.y)
+			auto screenSize = Hori::Renderer::GetInstance().GetCameraSize();
+			if (position.x < -screenSize.x || position.x > screenSize.x || position.y < -screenSize.y || position.y > screenSize.y)
 			{
 				world.RemoveEntity(enemy);
 				removed.push_back(enemy);

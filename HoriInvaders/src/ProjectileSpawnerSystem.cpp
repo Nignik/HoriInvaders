@@ -44,8 +44,8 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 		for (auto& projEntity : factory->projectileEntities)
 		{
 			auto& position = world.GetComponent<Hori::Transform>(projEntity)->position;
-			const auto& screenSize = Hori::Renderer::GetInstance().GetScreenSize();
-			if (position.x < 0 || position.x > screenSize.x || position.y < 0 || position.y > screenSize.y)
+			auto screenSize = Hori::Renderer::GetInstance().GetCameraSize();
+			if (position.x < -screenSize.x || position.x > screenSize.x || position.y < -screenSize.y || position.y > screenSize.y)
 			{
 				world.RemoveEntity(projEntity);
 				removed.push_back(projEntity);

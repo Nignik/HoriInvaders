@@ -7,6 +7,7 @@
 #include <Core/Shader.h>
 #include <Core/VelocityComponent.h>
 #include <Core/EventManager.h>
+#include <Core/Renderer.h>
 
 #include "Gun.h"
 #include "HealthComponent.h"
@@ -41,20 +42,25 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 	std::string gunName = blueprintInfo["weapon"].as<std::string>();
 	auto gun = GunComponent(guns[gunName]);
 
+	auto screenDim = Hori::Renderer::GetInstance().GetWindowSize();
+	auto position = blueprintInfo["position"];
+	auto rotation = blueprintInfo["rotation"].as<float>();
+	auto size = blueprintInfo["size"].as<float>();
+	Hori::Transform transform = {
+		.position = { position[0].as<float>(), position[0].as<float>()},
+		.rotation = rotation,
+		.scale = { size, size }
+	};
+
 	auto speed = blueprintInfo["speed"].as<float>();
-	auto dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(blueprintInfo["direction"].as<float>()));
-	Hori::VelocityComponent velocity(dir, speed);
+	auto direction = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(rotation - 90.f));
+	Hori::VelocityComponent velocity(direction, speed);
 
 	auto health = HealthComponent(blueprintInfo["health"].as<int>());
-	Hori::Transform transform = {
-		.position = { 100.0f, 100.0f },
-		.rotation = 180.f,
-		.scale = { 25.0f, 25.0f }
-	};
 
 	auto& world = Hori::World::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, sprite, shader, gun, velocity, health, transform, Hori::SphereCollider(transform, false), Hori::Sprite(), EnemyComponent(), ProjectileFactoryComponent());
+	world.AddComponents(enemy, sprite, shader, gun, velocity, health, transform, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), ProjectileFactoryComponent());
 
 	return enemy;
 }

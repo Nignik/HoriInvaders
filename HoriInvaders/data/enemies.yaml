@@ -1,7 +1,23 @@
 base_enemy:
   weapon: "enemy_gun"
   health: 50
-  speed: 300.0
-  direction: 90.0
+  speed: 15.0
+  rotation: 0.0
+  position:
+    - 10.0
+    - 10.0
+  size: 7.0
+  sprite: "resources/textures/awesomeface.png"
+  shader: "shaders/sprite"
+
+other_enemy:
+  weapon: "enemy_gun"
+  health: 50
+  speed: 15.0
+  rotation: 0.0
+  position:
+    - -10.0
+    - -10.0
+  size: 7.0
   sprite: "resources/textures/awesomeface.png"
   shader: "shaders/sprite"

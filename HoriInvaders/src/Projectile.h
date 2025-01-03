@@ -38,12 +38,14 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 
 	auto damage = DamageComponent(projectileData["damage"].as<float>());
 	auto speed = projectileData["speed"].as<float>();
-	auto dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(projectileData["direction"].as<float>()));
+	auto dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(projectileData["direction"].as<float>() - 90.f));
 	auto velocity = Hori::VelocityComponent(dir, speed);
+	auto scale = projectileData["size"].as<float>();
+
 	Hori::Transform transform = {
 		.position = glm::vec3(),
 		.rotation = glm::degrees(std::atan2(dir.x, dir.y)),
-		.scale = { 25.0f, 25.0f }
+		.scale = { scale, scale }
 	};
 
 	auto& world = Hori::World::GetInstance();
