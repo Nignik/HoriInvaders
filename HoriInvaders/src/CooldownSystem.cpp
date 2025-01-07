@@ -9,16 +9,19 @@ void CooldownSystem::Update(float dt)
 
 	for (auto entity : world.GetEntitiesWithComponents<CooldownComponent>())
 	{
-		auto cd = world.GetComponent<CooldownComponent>(entity);
+		auto cds = world.GetComponent<CooldownComponent>(entity);
 
-		if (cd->ready)
-			continue;
-
-		cd->currentCooldown -= dt;
-		if (cd->currentCooldown <= 0)
+		for (auto& cd : cds->cooldowns)
 		{
-			cd->ready = true;
-			cd->currentCooldown = cd->totalCooldown;
+			if (cd.ready)
+				continue;
+
+			cd.current -= dt;
+			if (cd.current <= 0)
+			{
+				cd.ready = true;
+				cd.current = cd.total;
+			}
 		}
 	}
 }

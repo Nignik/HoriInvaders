@@ -1,5 +1,23 @@
 #pragma once
 
+#include <World.h>
+#include <unordered_map>
+#include <iostream>
+
+enum class CooldownType
+{
+	ProjectileSpawn,
+	EnemySpawn
+};
+
+struct CooldownSlot
+{
+	Hori::Entity entity{};
+	CooldownType type{};
+	float total = 0.f;
+	bool ready = true;
+	float current = 0.f;
+};
 
 /*
 * Component used to track the cooldown.
@@ -7,14 +25,5 @@
 */
 struct CooldownComponent
 {
-	CooldownComponent(float totalCooldown, bool ready = true)
-		: totalCooldown(totalCooldown),
-		currentCooldown(totalCooldown),
-		ready(ready)
-	{
-	}
-
-	float totalCooldown = 0.f;
-	float currentCooldown = 0.f;
-	bool ready = true;
+	std::vector<CooldownSlot> cooldowns{};
 };

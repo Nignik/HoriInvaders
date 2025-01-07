@@ -24,18 +24,23 @@ void ProjectileSpawnerSystem::Update(float deltaTime)
 	// For every entity that has a gun component shoot all projectiles
 	for (auto shooterEntity : world.GetEntitiesWithComponents<GunComponent>())
 	{
-		auto gun = world.GetComponent<GunComponent>(shooterEntity);
 		auto factory = world.GetComponent<ProjectileFactoryComponent>(shooterEntity);
+		auto cooldowns = world.GetComponent<CooldownComponent>(shooterEntity);
 		assert(factory != nullptr && "Entity has a gun but doesn't have projectile factory component: not allowed");
+		assert(cooldowns != nullptr && "Entity has a gun but doesn't have cooldown component: not allowed");
 
-		for (auto& projectilePrototype : gun->projectilePrototypes)
+		// TODO: Change to an event, iterating over all cooldowns is ugly and inefficient
+		for (auto& cooldown : cooldowns->cooldowns)
 		{
-			auto cooldownComponent = world.GetComponent<CooldownComponent>(gun->reaload[projectilePrototype]);
-			if (!cooldownComponent->ready)
+			if (cooldown.type != CooldownType::ProjectileSpawn)
 				continue;
-			cooldownComponent->ready = false;
+
+			if (!cooldown.ready)
+				continue;
+
+			cooldown.ready = false;
 			
-			auto projectile = Spawn(projectilePrototype, shooterEntity);
+			auto projectile = Spawn(cooldown.entity, shooterEntity);
 			factory->projectileEntities.insert(projectile);
 		}
 

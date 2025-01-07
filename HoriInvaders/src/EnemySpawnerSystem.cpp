@@ -22,12 +22,20 @@ void EnemySpawnerSystem::Update(float deltaTime)
 	for (const auto& factoryEntity : world.GetEntitiesWithComponents<EnemyFactoryComponent>())
 	{
 		auto factory = world.GetComponent<EnemyFactoryComponent>(factoryEntity);
-		auto cd = world.GetComponent<CooldownComponent>(factoryEntity);
-		if (cd->ready)
+		auto cooldowns = world.GetComponent<CooldownComponent>(factoryEntity);
+
+		// TODO: Change this to event
+		for (auto& cooldown : cooldowns->cooldowns)
 		{
-			auto enemy = Spawn(factory->enemyPrototype);
-			factory->entities.insert(enemy);
-			cd->ready = false;
+			if (cooldown.type != CooldownType::EnemySpawn)
+				continue;
+
+			if (cooldown.ready)
+			{
+				auto enemy = Spawn(cooldown.entity);
+				factory->entities.insert(enemy);
+				cooldown.ready = false;
+			}
 		}
 
 		// Check for every enemy, whether it has left the screen, if so delete
@@ -35,8 +43,8 @@ void EnemySpawnerSystem::Update(float deltaTime)
 		for (auto& enemy : factory->entities)
 		{
 			auto& position = world.GetComponent<Hori::Transform>(enemy)->position;
-			auto screenSize = Hori::Renderer::GetInstance().GetCameraSize();
-			if (position.x < -screenSize.x || position.x > screenSize.x || position.y < -screenSize.y || position.y > screenSize.y)
+			auto cameraSize = Hori::Renderer::GetInstance().GetCameraSize();
+			if (position.x < -cameraSize.x || position.x > cameraSize.x || position.y < -cameraSize.y || position.y > cameraSize.y)
 			{
 				world.RemoveEntity(enemy);
 				removed.push_back(enemy);

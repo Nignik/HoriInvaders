@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-
+#include <World.h>
 #include <yaml-cpp/yaml.h>
 #include <glm/glm.hpp>
 
@@ -22,15 +22,8 @@ struct GunComponent
 		{
 			auto projectilePrototype = createProjectilePrototype(it->second);
 			projectilePrototypes.emplace_back(projectilePrototype);
-
-			// This needs to be changed, the entities dont ever get deleted, and its ugly
-			auto& world =Hori::World::GetInstance();
-			auto cooldown = world.CreateEntity();
-			world.AddComponents(cooldown, CooldownComponent(0.5f));
-			reaload[projectilePrototype] = cooldown;
 		}
 	}
 
 	std::vector<Hori::Entity> projectilePrototypes{};
-	std::unordered_map<Hori::Entity, Hori::Entity> reaload{};
 };

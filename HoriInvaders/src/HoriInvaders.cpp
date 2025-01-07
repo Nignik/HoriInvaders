@@ -41,7 +41,7 @@ int main()
 	Player player(playerInfo["player"]);
 
 	auto guns = YAML::LoadFile("data/guns.yaml");
-	world.AddComponents<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
+	//world.AddComponents<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
 
 	auto enemyBlueprints = YAML::LoadFile("data/enemies.yaml");
 	auto enemyPrototype1 = createEnemyPrototype(enemyBlueprints["base_enemy"]);
@@ -49,8 +49,8 @@ int main()
 
 	auto enemySpawner1 = world.CreateEntity();
 	auto enemySpawner2 = world.CreateEntity();
-	world.AddComponents(enemySpawner1, EnemyFactoryComponent(enemyPrototype1), CooldownComponent(5.f));
-	world.AddComponents(enemySpawner2, EnemyFactoryComponent(enemyPrototype2), CooldownComponent(5.f));
+	world.AddComponents(enemySpawner1, EnemyFactoryComponent(), CooldownComponent({{enemyPrototype1, CooldownType::EnemySpawn, 3.f}}));
+	world.AddComponents(enemySpawner2, EnemyFactoryComponent(), CooldownComponent({{enemyPrototype2, CooldownType::EnemySpawn, 3.f}}));
 
 
 	engine.Run();

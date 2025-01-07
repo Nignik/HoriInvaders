@@ -67,6 +67,7 @@ public:
 		world.AddComponents(entity, Hori::Controller());
 		world.AddComponents(entity, Hori::SphereCollider(transform));
 		world.AddComponents(entity, ProjectileFactoryComponent());
+
 	}
 
 

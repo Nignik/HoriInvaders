@@ -41,6 +41,11 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 	}
 	std::string gunName = blueprintInfo["weapon"].as<std::string>();
 	auto gun = GunComponent(guns[gunName]);
+	auto cooldowns = CooldownComponent();
+	for (auto& prototype : gun.projectilePrototypes)
+	{
+		cooldowns.cooldowns.emplace_back(prototype, CooldownType::ProjectileSpawn, 0.5f);
+	}
 
 	auto screenDim = Hori::Renderer::GetInstance().GetWindowSize();
 	auto position = blueprintInfo["position"];
@@ -60,7 +65,7 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 
 	auto& world = Hori::World::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, sprite, shader, gun, velocity, health, transform, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), ProjectileFactoryComponent());
+	world.AddComponents(enemy, sprite, shader, gun, velocity, health, transform, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), ProjectileFactoryComponent(), cooldowns);
 
 	return enemy;
 }
