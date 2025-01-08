@@ -9,16 +9,14 @@
 
 #include <glm/glm.hpp>
 
-#include "Gun.h"
-#include "ProjectileSpawnerSystem.h"
-#include "ProjectileFactoryComponent.h"
+
 #include "Player.h"
 #include "Enemy.h"
 #include "DamageSystem.h"
-#include "EnemyFactoryComponent.h"
-#include "EnemySpawnerSystem.h"
 #include "DeathSystem.h"
 #include "CooldownSystem.h"
+#include "SpawnerComponent.h"
+#include "SpawnerSystem.h"
 
 using namespace std;
 
@@ -32,8 +30,7 @@ int main()
 
 	// BAD !!!!!!!!!! Damage system is not guaranteed to execute after the collision system
 	world.AddSystem<DamageSystem>(DamageSystem());
-	world.AddSystem<ProjectileSpawnerSystem>(ProjectileSpawnerSystem());
-	world.AddSystem<EnemySpawnerSystem>(EnemySpawnerSystem());
+	world.AddSystem<SpawnerSystem>(SpawnerSystem());
 	world.AddSystem<DeathSystem>(DeathSystem());
 	world.AddSystem<CooldownSystem>(CooldownSystem());
 
@@ -49,8 +46,8 @@ int main()
 
 	auto enemySpawner1 = world.CreateEntity();
 	auto enemySpawner2 = world.CreateEntity();
-	world.AddComponents(enemySpawner1, EnemyFactoryComponent(), CooldownComponent({{enemyPrototype1, CooldownType::EnemySpawn, 3.f}}));
-	world.AddComponents(enemySpawner2, EnemyFactoryComponent(), CooldownComponent({{enemyPrototype2, CooldownType::EnemySpawn, 3.f}}));
+	world.AddComponents(enemySpawner1, SpawnerComponent(), CooldownComponent({{enemyPrototype1, CooldownType::EnemySpawn, 3.f}}));
+	world.AddComponents(enemySpawner2, SpawnerComponent(), CooldownComponent({{enemyPrototype2, CooldownType::EnemySpawn, 3.f}}));
 
 
 	engine.Run();

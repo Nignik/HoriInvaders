@@ -9,9 +9,10 @@
 #include <Core/EventManager.h>
 #include <Core/Renderer.h>
 
-#include "Gun.h"
 #include "HealthComponent.h"
-#include "ProjectileFactoryComponent.h"
+#include "YamlUtils.h"
+#include "SpawnerComponent.h"
+#include "CooldownComponent.h"
 
 struct EnemyDeathEvent : public Hori::IEvent
 {
@@ -20,7 +21,7 @@ struct EnemyDeathEvent : public Hori::IEvent
 	{
 	}
 
-	Hori::Entity deadEnemy;
+	Hori::Entity deadEnemy{};
 };
 
 struct EnemyComponent {};
@@ -29,20 +30,17 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 {
 	std::filesystem::path spritePath = blueprintInfo["sprite"].as<std::string>();
 	std::filesystem::path shaderPath = blueprintInfo["shader"].as<std::string>();
-	std::filesystem::path gunFilePath = "data/guns.yaml";
+	std::filesystem::path projectilePackagePath = "data/guns.yaml";
 
 	auto sprite = Hori::LoadTextureFromFile(spritePath, true);
 	auto shader = Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs"));
 
-	auto guns = YAML::LoadFile(gunFilePath.string());
-	for (const auto& key : guns)
-	{
-		std::cout << key.first.as<std::string>() << std::endl;
-	}
-	std::string gunName = blueprintInfo["weapon"].as<std::string>();
-	auto gun = GunComponent(guns[gunName]);
+	auto projectilePackageBlueprint = YAML::LoadFile(projectilePackagePath.string());
+	std::string projectilePackage = blueprintInfo["weapon"].as<std::string>();
+
+	auto prototypes = loadProjectilePackage(projectilePackageBlueprint[projectilePackage]);
 	auto cooldowns = CooldownComponent();
-	for (auto& prototype : gun.projectilePrototypes)
+	for (auto& prototype : prototypes)
 	{
 		cooldowns.cooldowns.emplace_back(prototype, CooldownType::ProjectileSpawn, 0.5f);
 	}
@@ -65,7 +63,7 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 
 	auto& world = Hori::World::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, sprite, shader, gun, velocity, health, transform, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), ProjectileFactoryComponent(), cooldowns);
+	world.AddComponents(enemy, sprite, shader, velocity, health, transform, cooldowns, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), SpawnerComponent());
 
 	return enemy;
 }

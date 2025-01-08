@@ -11,9 +11,11 @@
 #include <Core/Collider.h>
 #include <Core/ResourceManager.h>
 #include <Core/Renderer.h>
+#include <yaml-cpp/yaml.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "HealthComponent.h"
-#include "ProjectileFactoryComponent.h"
 
 namespace fs = std::filesystem;
 
@@ -25,51 +27,36 @@ struct PlayerComponent
 struct Player
 {
 public:
-	Player(Hori::Transform transform, float speed, int health)
-		: entity(Hori::World::GetInstance().CreateEntity())
-	{
-		auto& world = Hori::World::GetInstance();
-
-		world.AddComponents(entity, transform);
-		world.AddComponents(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
-		world.AddComponents(entity, HealthComponent(health));
-		world.AddComponents(entity, Hori::Sprite());
-		world.AddComponents(entity, Hori::Controller());
-		world.AddComponents(entity, Hori::SphereCollider(transform));
-		world.AddComponents(entity, Hori::LoadShaderFromFile("shaders/sprite.vs", "shaders/sprite.fs"));
-		world.AddComponents(entity, Hori::LoadTextureFromFile("resources/textures/awesomeface.png", true));
-	}
-
 	Player(YAML::Node playerInfo)
 		: entity(Hori::World::GetInstance().CreateEntity())
 	{
 		auto& world = Hori::World::GetInstance();
-
 		auto screenDim = Hori::Renderer::GetInstance().GetWindowSize();
+
 		auto position = glm::vec2{ playerInfo["spawn"][0].as<float>(), playerInfo["spawn"][1].as<float>() };
+		float rotation = 0.0f;
 		Hori::Transform transform = {
 			.position = position,
-			.rotation = 0.0f,
+			.rotation = rotation,
 			.scale = {playerInfo["size"].as<float>(), playerInfo["size"].as<float>()}
 		};
+
 		fs::path shaderPath = playerInfo["shader"].as<std::string>();
 		fs::path spritePath = playerInfo["sprite"].as<std::string>();
+		auto shader = Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs"));
+		auto sprite = Hori::LoadTextureFromFile(spritePath, true);
+
 		float speed = playerInfo["speed"].as<float>();
-		int health = playerInfo["health"].as<int>();
+		glm::vec2 direction = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(rotation - 90.f));;
+		Hori::VelocityComponent velocity(direction, speed);
 
-		world.AddComponents(entity, PlayerComponent());
-		world.AddComponents(entity, transform);
-		world.AddComponents(entity, Hori::VelocityComponent({ 0.0f, 0.0f }, speed));
-		world.AddComponents(entity, HealthComponent(health));
-		world.AddComponents(entity, Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs")));
-		world.AddComponents(entity, Hori::LoadTextureFromFile(spritePath, true));
-		world.AddComponents(entity, Hori::Sprite());
-		world.AddComponents(entity, Hori::Controller());
-		world.AddComponents(entity, Hori::SphereCollider(transform));
-		world.AddComponents(entity, ProjectileFactoryComponent());
+		auto health = HealthComponent(playerInfo["health"].as<int>());
+		auto collider = Hori::SphereCollider(transform);
 
+		world.AddComponents(entity, transform, shader, sprite, velocity, health, collider,
+			PlayerComponent(), Hori::Sprite(), Hori::Controller());
 	}
 
 
-	Hori::Entity entity;
+	Hori::Entity entity{};
 };

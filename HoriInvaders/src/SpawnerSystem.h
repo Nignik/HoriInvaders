@@ -9,14 +9,15 @@
 /*
 	Class responsible for instantiating projectiles in the world
 */
-class ProjectileSpawnerSystem : public Hori::System
+class SpawnerSystem : public Hori::System
 {
 public:
-	ProjectileSpawnerSystem();
+	SpawnerSystem();
 
 	void Update(float deltaTime) override;
 
 private:
-	Hori::Entity Spawn(Hori::Entity& projectilePrototype, Hori::Entity& shooterEntity);
+	Hori::Entity SpawnProjectile(Hori::Entity& prototype, Hori::Entity& spawnerEntity);
+	Hori::Entity SpawnEnemy(Hori::Entity& prototype, Hori::Entity& spawnerEntity);
 
 };
