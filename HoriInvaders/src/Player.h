@@ -53,7 +53,7 @@ public:
 		auto health = HealthComponent(playerInfo["health"].as<int>());
 		auto collider = Hori::SphereCollider(transform);
 
-		world.AddComponents(entity, transform, shader, sprite, velocity, health, collider,
+		world.AddComponents(entity, transform, shader, sprite, velocity, collider,
 			PlayerComponent(), Hori::Sprite(), Hori::Controller());
 	}
 

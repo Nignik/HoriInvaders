@@ -37,23 +37,6 @@ void SpawnerSystem::Update(float deltaTime)
 
 			cooldown.ready = false;
 		}
-
-		/*std::vector<Hori::Entity> removed;
-		for (auto& projEntity : spawnerComponent->spawned)
-		{
-			auto& position = world.GetComponent<Hori::Transform>(projEntity)->position;
-			auto screenSize = Hori::Renderer::GetInstance().GetCameraSize();
-			if (position.x < -screenSize.x || position.x > screenSize.x || position.y < -screenSize.y || position.y > screenSize.y)
-			{
-				world.RemoveEntity(projEntity);
-				removed.push_back(projEntity);
-			}
-		}
-
-		for (auto& projEntity : removed)
-		{
-			spawnerComponent->spawned.erase(projEntity);
-		}*/
 	}
 }
 

@@ -15,6 +15,7 @@
 
 #include "DamageComponent.h"
 #include "CooldownComponent.h"
+#include "HealthComponent.h"
 
 namespace fs = std::filesystem;
 
@@ -36,6 +37,8 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 	auto shader = Hori::LoadShaderFromFile(shader_name.replace_extension(".vs"), shader_name.replace_extension(".fs"));
 
 	auto damage = DamageComponent(projectileData["damage"].as<float>());
+	auto health = HealthComponent(1000000);
+
 	auto speed = projectileData["speed"].as<float>();
 	auto dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(projectileData["direction"].as<float>() - 90.f));
 	auto velocity = Hori::VelocityComponent(dir, speed);
@@ -49,7 +52,7 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 
 	auto& world = Hori::World::GetInstance();
 	Hori::Entity projectilePrototype = world.CreatePrototypeEntity();
-	world.AddComponents(projectilePrototype, texture, shader, damage, velocity, transform, Hori::SphereCollider(transform, true), Hori::Sprite());
+	world.AddComponents(projectilePrototype, texture, shader, damage, velocity, health, transform, Hori::SphereCollider(transform, true), Hori::Sprite());
 
 	return projectilePrototype;
 }

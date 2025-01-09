@@ -1,4 +1,7 @@
 #include "DeathSystem.h"
+#include "HealthComponent.h"
+#include "SpawnerComponent.h"
+#include "Projectile.h"
 
 #include <Core/EventManager.h>
 #include <World.h>
@@ -9,30 +12,18 @@ DeathSystem::DeathSystem()
 {
 
 }
-// TODO: Make it work with new Spawner
 
+// TODO: Make it work with new Spawner
 void DeathSystem::Update(float deltaTime)
 {
-	//auto& eventMng = Hori::EventManager::GetInstance();
-	//auto& world = Hori::World::GetInstance();
+	auto& world = Hori::World::GetInstance();
 
-	//// Inefficient implemenation
-	//auto event = eventMng.PopEvent<EnemyDeathEvent>();
-	//while (event != nullptr)
-	//{
-	//	for (auto& factoryEntity : world.GetEntitiesWithComponents<EnemyFactoryComponent>())
-	//	{
-	//		auto factoryComp = world.GetComponent<EnemyFactoryComponent>(factoryEntity);
-	//		if (factoryComp->entities.contains(event->deadEnemy))
-	//		{
-	//			std::cout << "Enemy died" << std::endl;
-	//			world.RemoveEntity(event->deadEnemy);
-	//			factoryComp->entities.erase(event->deadEnemy);
-	//			break;
-	//		}
-	//	}
+	for (auto entity : world.GetEntitiesWithComponents<HealthComponent>())
+	{
+		auto health = world.GetComponent<HealthComponent>(entity);
+		if (health->value > 0)
+			continue;
 
-	//	event = eventMng.PopEvent<EnemyDeathEvent>();
-	//}
-	
+		world.RemoveEntity(entity);
+	}
 }
