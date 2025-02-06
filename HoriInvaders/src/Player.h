@@ -10,6 +10,8 @@
 #include <Core/Controller.h>
 #include <Core/Collider.h>
 #include <Core/ResourceManager.h>
+#include <Core/PrimitivesGeneration.h>
+#include <Core/WireframeComponent.h>
 #include <Core/Renderer.h>
 #include <yaml-cpp/yaml.h>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -53,8 +55,10 @@ public:
 		auto health = HealthComponent(playerInfo["health"].as<int>());
 		auto collider = Hori::SphereCollider(transform);
 
-		world.AddComponents(entity, transform, shader, sprite, velocity, collider,
-			PlayerComponent(), Hori::Sprite(), Hori::Controller());
+		auto vertices = generateCircleVertices(0.5f, 10);
+		auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		world.AddComponents(entity, transform, shader, sprite, velocity, collider, PlayerComponent(), Hori::Sprite(), Hori::Controller(), wireframe);
 	}
 
 

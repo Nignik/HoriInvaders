@@ -10,7 +10,7 @@ enum class CooldownType
 	EnemySpawn
 };
 
-// TODO: Stop leaking memory
+// Be careful for potential memory leaks, nothing deletes the entity here
 struct CooldownSlot
 {
 	Hori::Entity entity{};

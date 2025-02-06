@@ -12,6 +12,8 @@
 #include <World.h>
 #include <Core/Collider.h>
 #include <Core/Sprite.h>
+#include <Core/PrimitivesGeneration.h>
+#include <Core/WireframeComponent.h>
 
 #include "DamageComponent.h"
 #include "CooldownComponent.h"
@@ -50,9 +52,12 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 		.scale = { scale, scale }
 	};
 
+	auto vertices = generateCircleVertices(0.5f, 10);
+	auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
+
 	auto& world = Hori::World::GetInstance();
 	Hori::Entity projectilePrototype = world.CreatePrototypeEntity();
-	world.AddComponents(projectilePrototype, texture, shader, damage, velocity, health, transform, Hori::SphereCollider(transform, true), Hori::Sprite());
+	world.AddComponents(projectilePrototype, texture, shader, damage, velocity, health, transform, Hori::SphereCollider(transform, true), Hori::Sprite(), wireframe);
 
 	return projectilePrototype;
 }

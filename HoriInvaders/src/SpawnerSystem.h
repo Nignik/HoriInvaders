@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/System.h>
+#include <System.h>
 #include <Core/Transform.h>
 #include <Entity.h>
 

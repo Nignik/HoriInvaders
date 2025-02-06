@@ -9,8 +9,9 @@ find_package(HoriEngine REQUIRED)
 find_package(glad REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
+find_package(Freetype REQUIRED)
 
-target_link_libraries(HoriInvaders PRIVATE HECS::HECS HoriEngine::HoriEngine yaml-cpp::yaml-cpp)
+target_link_libraries(HoriInvaders PRIVATE HECS::HECS HoriEngine::HoriEngine yaml-cpp::yaml-cpp Freetype::Freetype)
 
 add_custom_command(
     TARGET HoriInvaders POST_BUILD

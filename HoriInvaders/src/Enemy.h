@@ -8,6 +8,8 @@
 #include <Core/VelocityComponent.h>
 #include <Core/EventManager.h>
 #include <Core/Renderer.h>
+#include <Core/WireframeComponent.h>
+#include <Core/PrimitivesGeneration.h>
 
 #include "HealthComponent.h"
 #include "YamlUtils.h"
@@ -61,9 +63,12 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 
 	auto health = HealthComponent(blueprintInfo["health"].as<int>());
 
+	auto vertices = generateCircleVertices(0.5f, 10);
+	auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
+
 	auto& world = Hori::World::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, sprite, shader, velocity, health, transform, cooldowns, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), SpawnerComponent());
+	world.AddComponents(enemy, sprite, shader, velocity, health, transform, cooldowns, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), SpawnerComponent(), wireframe);
 
 	return enemy;
 }

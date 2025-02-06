@@ -6,9 +6,8 @@
 #include <Core/Collider.h>
 #include <Core/Shader.h>
 #include <Core/Texture.h>
-
+#include <Core/TextComponent.h>
 #include <glm/glm.hpp>
-
 
 #include "Player.h"
 #include "Enemy.h"
@@ -24,6 +23,8 @@ int main()
 {
 	auto& engine = Hori::Engine::GetInstance();
 	engine.InitSystems();
+	engine.InitSingletonComponents();
+	engine.InitDebugSystems();
 
 	auto& renderer = Hori::Renderer::GetInstance();
 	auto& world = Hori::World::GetInstance();
@@ -45,9 +46,12 @@ int main()
 	auto enemyPrototype2 = createEnemyPrototype(enemyBlueprints["other_enemy"]);
 
 	auto enemySpawner1 = world.CreateEntity();
-	auto enemySpawner2 = world.CreateEntity();
 	world.AddComponents(enemySpawner1, SpawnerComponent(), CooldownComponent({{enemyPrototype1, CooldownType::EnemySpawn, 3.f}}));
-	world.AddComponents(enemySpawner2, SpawnerComponent(), CooldownComponent({{enemyPrototype2, CooldownType::EnemySpawn, 3.f}}));
+	/*for (int i = 0; i < 5; i++)
+	{
+		auto enemySpawner2 = world.CreateEntity();
+		world.AddComponents(enemySpawner2, SpawnerComponent(), CooldownComponent({ {enemyPrototype2, CooldownType::EnemySpawn, 3.f} }));
+	}*/
 
 
 	engine.Run();

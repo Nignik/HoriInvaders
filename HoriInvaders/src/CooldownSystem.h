@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/System.h>
+#include <System.h>
 
 class CooldownSystem : public Hori::System
 {

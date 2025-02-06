@@ -4,8 +4,8 @@ base_enemy:
   speed: 15.0
   rotation: 0.0
   position:
-    - 10.0
-    - 10.0
+    - 0.0
+    - 0.0
   size: 7.0
   sprite: "resources/textures/awesomeface.png"
   shader: "shaders/sprite"
