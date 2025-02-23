@@ -1,7 +1,7 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
-#include <World.h>
+#include <Core/Ecs.h>
 #include <set>
 
 #include "Projectile.h"

@@ -4,7 +4,7 @@
 #include "Projectile.h"
 
 #include <Core/EventManager.h>
-#include <World.h>
+#include <Core/Ecs.h>
 #include <Core/Collider.h>
 #include <iostream>
 
@@ -16,7 +16,7 @@ DeathSystem::DeathSystem()
 // TODO: Make it work with new Spawner
 void DeathSystem::Update(float deltaTime)
 {
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 
 	for (auto entity : world.GetEntitiesWithComponents<HealthComponent>())
 	{

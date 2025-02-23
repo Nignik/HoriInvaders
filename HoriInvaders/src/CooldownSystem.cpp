@@ -1,11 +1,11 @@
 #include "CooldownSystem.h"
 #include "CooldownComponent.h"
 
-#include <World.h>
+#include <Core/Ecs.h>
 
 void CooldownSystem::Update(float dt)
 {
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 
 	for (auto entity : world.GetEntitiesWithComponents<CooldownComponent>())
 	{

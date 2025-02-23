@@ -7,6 +7,8 @@
 #include <Core/Shader.h>
 #include <Core/Texture.h>
 #include <Core/TextComponent.h>
+#include <Core/DebugUIComponents.h>
+#include <Core/YamlInspectorComponent.h>
 #include <glm/glm.hpp>
 
 #include "Player.h"
@@ -27,13 +29,21 @@ int main()
 	engine.InitDebugSystems();
 
 	auto& renderer = Hori::Renderer::GetInstance();
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 
 	// BAD !!!!!!!!!! Damage system is not guaranteed to execute after the collision system
 	world.AddSystem<DamageSystem>(DamageSystem());
 	world.AddSystem<SpawnerSystem>(SpawnerSystem());
 	world.AddSystem<DeathSystem>(DeathSystem());
 	world.AddSystem<CooldownSystem>(CooldownSystem());
+
+	auto yamlInspector = world.CreateEntity();
+	Hori::YamlInspectorComponent yamlComp;
+	yamlComp.OpenFile("data/enemies.yaml");
+	world.AddComponents(yamlInspector, yamlComp);
+
+	auto fileBrowser = world.CreateEntity();
+	world.AddComponents(fileBrowser, Hori::FileBrowserComponent("file browser", "C:/"));
 
 	auto playerInfo = YAML::LoadFile("data/player.yaml");
 	Player player(playerInfo["player"]);

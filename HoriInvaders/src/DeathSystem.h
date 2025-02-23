@@ -1,7 +1,7 @@
 #pragma once
 
 #include <System.h>
-#include <World.h>
+#include <Core/Ecs.h>
 
 class DeathSystem : public Hori::System
 {

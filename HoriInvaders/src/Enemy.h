@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <World.h>
+#include <Core/Ecs.h>
 #include <Core/Texture.h>
 #include <Core/Shader.h>
 #include <Core/VelocityComponent.h>
@@ -66,7 +66,7 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 	auto vertices = generateCircleVertices(0.5f, 10);
 	auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
 	world.AddComponents(enemy, sprite, shader, velocity, health, transform, cooldowns, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), SpawnerComponent(), wireframe);
 

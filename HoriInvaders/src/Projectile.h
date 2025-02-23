@@ -9,7 +9,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
-#include <World.h>
+#include <Core/Ecs.h>
 #include <Core/Collider.h>
 #include <Core/Sprite.h>
 #include <Core/PrimitivesGeneration.h>
@@ -55,7 +55,7 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 	auto vertices = generateCircleVertices(0.5f, 10);
 	auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 	Hori::Entity projectilePrototype = world.CreatePrototypeEntity();
 	world.AddComponents(projectilePrototype, texture, shader, damage, velocity, health, transform, Hori::SphereCollider(transform, true), Hori::Sprite(), wireframe);
 

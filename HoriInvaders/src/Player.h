@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-#include <World.h>
+#include <Core/Ecs.h>
 #include <Entity.h>
 #include <Core/Transform.h>
 #include <Core/Sprite.h>
@@ -30,9 +30,9 @@ struct Player
 {
 public:
 	Player(YAML::Node playerInfo)
-		: entity(Hori::World::GetInstance().CreateEntity())
+		: entity(Hori::Ecs::GetInstance().CreateEntity())
 	{
-		auto& world = Hori::World::GetInstance();
+		auto& world = Hori::Ecs::GetInstance();
 		auto screenDim = Hori::Renderer::GetInstance().GetWindowSize();
 
 		auto position = glm::vec2{ playerInfo["spawn"][0].as<float>(), playerInfo["spawn"][1].as<float>() };

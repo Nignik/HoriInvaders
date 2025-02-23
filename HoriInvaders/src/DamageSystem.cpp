@@ -5,7 +5,7 @@
 #include "Enemy.h"
 
 #include <Core/EventManager.h>
-#include <World.h>
+#include <Core/Ecs.h>
 #include <Core/Collider.h>
 #include <iostream>
 
@@ -18,7 +18,7 @@ void DamageSystem::Update(float dt)
 void DamageSystem::ProcessTriggers()
 {
 	auto& eventMng = Hori::EventManager::GetInstance();
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 
 	// TODO: instead of popping the event, get all events
 	// Process every collision to check if any entities should take damage
@@ -55,7 +55,7 @@ void DamageSystem::ProcessTriggers()
 
 void DamageSystem::ProcessBounds()
 {
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 	auto& eventMng = Hori::EventManager::GetInstance();
 	auto cameraSize = Hori::Renderer::GetInstance().GetCameraSize();
 

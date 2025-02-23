@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "CooldownComponent.h"
 
-#include <World.h>
+#include <Core/Ecs.h>
 #include <Core/Sprite.h>
 #include <Core/Transform.h>
 #include <Core/Renderer.h>
@@ -18,7 +18,7 @@ SpawnerSystem::SpawnerSystem()
 
 void SpawnerSystem::Update(float deltaTime)
 {
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 
 	for (auto spawnerEntity : world.GetEntitiesWithComponents<SpawnerComponent>())
 	{
@@ -42,7 +42,7 @@ void SpawnerSystem::Update(float deltaTime)
 
 Hori::Entity SpawnerSystem::SpawnProjectile(Hori::Entity& prototype, Hori::Entity& spawnerEntity)
 {
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 
 	auto spawnerComponent = world.GetComponent<SpawnerComponent>(spawnerEntity);
 	auto transform = world.GetComponent<Hori::Transform>(spawnerEntity);
@@ -63,7 +63,7 @@ Hori::Entity SpawnerSystem::SpawnProjectile(Hori::Entity& prototype, Hori::Entit
 
 Hori::Entity SpawnerSystem::SpawnEnemy(Hori::Entity& prototype, Hori::Entity& spawnerEntity)
 {
-	auto& world = Hori::World::GetInstance();
+	auto& world = Hori::Ecs::GetInstance();
 
 	auto enemy = world.Clone(prototype);
 
