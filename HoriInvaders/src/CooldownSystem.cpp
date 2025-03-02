@@ -7,7 +7,7 @@ void CooldownSystem::Update(float dt)
 {
 	auto& world = Hori::Ecs::GetInstance();
 
-	for (auto entity : world.GetEntitiesWithComponents<CooldownComponent>())
+	for (auto entity : world.GetEntitiesWith<CooldownComponent>())
 	{
 		auto cds = world.GetComponent<CooldownComponent>(entity);
 

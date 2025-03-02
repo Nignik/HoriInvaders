@@ -18,7 +18,7 @@ void DeathSystem::Update(float deltaTime)
 {
 	auto& world = Hori::Ecs::GetInstance();
 
-	for (auto entity : world.GetEntitiesWithComponents<HealthComponent>())
+	for (auto entity : world.GetEntitiesWith<HealthComponent>())
 	{
 		auto health = world.GetComponent<HealthComponent>(entity);
 		if (health->value > 0)

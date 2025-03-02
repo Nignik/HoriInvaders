@@ -40,7 +40,7 @@ int main()
 	auto yamlInspector = world.CreateEntity();
 	Hori::YamlInspectorComponent yamlComp;
 	yamlComp.OpenFile("data/enemies.yaml");
-	world.AddComponents(yamlInspector, yamlComp);
+	world.AddComponents(yamlInspector, std::move(yamlComp));
 
 	auto fileBrowser = world.CreateEntity();
 	world.AddComponents(fileBrowser, Hori::FileBrowserComponent("file browser", "C:/"));

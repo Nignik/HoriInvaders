@@ -58,7 +58,7 @@ public:
 		auto vertices = generateCircleVertices(0.5f, 10);
 		auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		world.AddComponents(entity, transform, shader, sprite, velocity, collider, PlayerComponent(), Hori::Sprite(), Hori::Controller(), wireframe);
+		world.AddComponents(entity, std::move(transform), std::move(shader), std::move(sprite), std::move(velocity), std::move(collider), PlayerComponent(), Hori::Sprite(), Hori::Controller(), std::move(wireframe));
 	}
 
 

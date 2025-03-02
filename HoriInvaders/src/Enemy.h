@@ -68,7 +68,7 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 
 	auto& world = Hori::Ecs::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, sprite, shader, velocity, health, transform, cooldowns, Hori::SphereCollider(transform), Hori::Sprite(), EnemyComponent(), SpawnerComponent(), wireframe);
+	world.AddComponents(enemy, std::move(sprite), std::move(shader), std::move(velocity), std::move(health), std::move(transform), std::move(cooldowns), std::move(Hori::SphereCollider(transform)), std::move(Hori::Sprite()), EnemyComponent(), SpawnerComponent(), std::move(wireframe));
 
 	return enemy;
 }

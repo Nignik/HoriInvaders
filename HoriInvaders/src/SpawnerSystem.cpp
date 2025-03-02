@@ -20,7 +20,7 @@ void SpawnerSystem::Update(float deltaTime)
 {
 	auto& world = Hori::Ecs::GetInstance();
 
-	for (auto spawnerEntity : world.GetEntitiesWithComponents<SpawnerComponent>())
+	for (auto spawnerEntity : world.GetEntitiesWith<SpawnerComponent>())
 	{
 		auto& cooldowns = world.GetComponent<CooldownComponent>(spawnerEntity)->cooldowns;
 

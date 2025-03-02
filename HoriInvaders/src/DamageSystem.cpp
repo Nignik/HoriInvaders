@@ -59,7 +59,7 @@ void DamageSystem::ProcessBounds()
 	auto& eventMng = Hori::EventManager::GetInstance();
 	auto cameraSize = Hori::Renderer::GetInstance().GetCameraSize();
 
-	for (auto& entity : world.GetEntitiesWithComponents<HealthComponent>())
+	for (auto& entity : world.GetEntitiesWith<HealthComponent>())
 	{
 		auto transform = world.GetComponent<Hori::Transform>(entity);
 		if (transform == nullptr)

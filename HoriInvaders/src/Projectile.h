@@ -57,7 +57,7 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 
 	auto& world = Hori::Ecs::GetInstance();
 	Hori::Entity projectilePrototype = world.CreatePrototypeEntity();
-	world.AddComponents(projectilePrototype, texture, shader, damage, velocity, health, transform, Hori::SphereCollider(transform, true), Hori::Sprite(), wireframe);
+	world.AddComponents(projectilePrototype, std::move(texture), std::move(shader), std::move(damage), std::move(velocity), std::move(health), std::move(transform), Hori::SphereCollider(transform, true), Hori::Sprite(), std::move(wireframe));
 
 	return projectilePrototype;
 }
