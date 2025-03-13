@@ -33,10 +33,16 @@ struct PlayerProjectileComponent
 
 inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 {
-	fs::path spritePath = projectileData["sprite"].as<std::string>();
-	fs::path shader_name = projectileData["shader"].as<std::string>();
-	auto texture = Hori::LoadTextureFromFile(spritePath, true);
-	auto shader = Hori::LoadShaderFromFile(shader_name.replace_extension(".vs"), shader_name.replace_extension(".fs"));
+	fs::path texturePath = projectileData["sprite"].as<std::string>();
+	fs::path shaderPath = projectileData["shader"].as<std::string>();
+
+	auto& resourceMng = Hori::ResourceManager::GetInstance();
+
+	auto textureHandle = resourceMng.Load<Hori::Texture2D>(texturePath);
+	auto shaderHandle = resourceMng.Load<Hori::Shader>(shaderPath);
+
+	auto texture = *resourceMng.Get(textureHandle);
+	auto shader = *resourceMng.Get(shaderHandle);
 
 	auto damage = DamageComponent(projectileData["damage"].as<float>());
 	auto health = HealthComponent(1000000);

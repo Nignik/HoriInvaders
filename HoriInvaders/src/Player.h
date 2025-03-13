@@ -44,9 +44,16 @@ public:
 		};
 
 		fs::path shaderPath = playerInfo["shader"].as<std::string>();
-		fs::path spritePath = playerInfo["sprite"].as<std::string>();
-		auto shader = Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs"));
-		auto sprite = Hori::LoadTextureFromFile(spritePath, true);
+		fs::path texturePath = playerInfo["sprite"].as<std::string>();
+
+		auto& resourceMng = Hori::ResourceManager::GetInstance();
+
+		auto textureHandle = resourceMng.Load<Hori::Texture2D>(texturePath);
+		auto shaderHandle = resourceMng.Load<Hori::Shader>(shaderPath);
+
+		auto texture = *resourceMng.Get(textureHandle);
+		auto shader = *resourceMng.Get(shaderHandle);
+
 
 		float speed = playerInfo["speed"].as<float>();
 		glm::vec2 direction = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(rotation - 90.f));;
@@ -58,7 +65,7 @@ public:
 		auto vertices = generateCircleVertices(0.5f, 10);
 		auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		world.AddComponents(entity, std::move(transform), std::move(shader), std::move(sprite), std::move(velocity), std::move(collider), PlayerComponent(), Hori::Sprite(), Hori::Controller(), std::move(wireframe));
+		world.AddComponents(entity, std::move(transform), std::move(shader), std::move(texture), std::move(velocity), std::move(collider), PlayerComponent(), Hori::Sprite(), Hori::Controller(), std::move(wireframe));
 	}
 
 

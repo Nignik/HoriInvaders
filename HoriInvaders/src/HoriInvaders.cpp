@@ -37,6 +37,12 @@ int main()
 	world.AddSystem<DeathSystem>(DeathSystem());
 	world.AddSystem<CooldownSystem>(CooldownSystem());
 
+	auto& resourceMng = Hori::ResourceManager::GetInstance();
+	auto enemiesHandle = resourceMng.Load<YAML::Node>("data/enemies.yaml");
+	auto playerHandle = resourceMng.Load<YAML::Node>("data/player.yaml");
+	auto gunsHandle = resourceMng.Load<YAML::Node>("data/guns.yaml");
+
+
 	auto yamlInspector = world.CreateEntity();
 	Hori::YamlInspectorComponent yamlComp;
 	yamlComp.OpenFile("data/enemies.yaml");
@@ -44,16 +50,16 @@ int main()
 
 	auto fileBrowser = world.CreateEntity();
 	world.AddComponents(fileBrowser, Hori::FileBrowserComponent("file browser", "C:/"));
+	
+	auto playerInfo = resourceMng.Get(playerHandle);
+	Player player((*playerInfo)["player"]);
 
-	auto playerInfo = YAML::LoadFile("data/player.yaml");
-	Player player(playerInfo["player"]);
-
-	auto guns = YAML::LoadFile("data/guns.yaml");
+	auto guns = resourceMng.Get(gunsHandle);
 	//world.AddComponents<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
 
-	auto enemyBlueprints = YAML::LoadFile("data/enemies.yaml");
-	auto enemyPrototype1 = createEnemyPrototype(enemyBlueprints["base_enemy"]);
-	auto enemyPrototype2 = createEnemyPrototype(enemyBlueprints["other_enemy"]);
+	auto enemyBlueprints = resourceMng.Get(enemiesHandle);
+	auto enemyPrototype1 = createEnemyPrototype((*enemyBlueprints)["base_enemy"]);
+	auto enemyPrototype2 = createEnemyPrototype((*enemyBlueprints)["other_enemy"]);
 
 	auto enemySpawner1 = world.CreateEntity();
 	world.AddComponents(enemySpawner1, SpawnerComponent(), CooldownComponent({{enemyPrototype1, CooldownType::EnemySpawn, 3.f}}));

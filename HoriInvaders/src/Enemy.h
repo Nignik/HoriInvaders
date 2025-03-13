@@ -30,17 +30,23 @@ struct EnemyComponent {};
 
 inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 {
-	std::filesystem::path spritePath = blueprintInfo["sprite"].as<std::string>();
+	std::filesystem::path texturePath = blueprintInfo["sprite"].as<std::string>();
 	std::filesystem::path shaderPath = blueprintInfo["shader"].as<std::string>();
 	std::filesystem::path projectilePackagePath = "data/guns.yaml";
 
-	auto sprite = Hori::LoadTextureFromFile(spritePath, true);
-	auto shader = Hori::LoadShaderFromFile(shaderPath.replace_extension(".vs"), shaderPath.replace_extension(".fs"));
+	auto& resourceMng = Hori::ResourceManager::GetInstance();
 
-	auto projectilePackageBlueprint = YAML::LoadFile(projectilePackagePath.string());
+	auto textureHandle = resourceMng.Load<Hori::Texture2D>(texturePath);
+	auto shaderHandle = resourceMng.Load<Hori::Shader>(shaderPath);
+	auto projectilePackageHandle = resourceMng.Load<YAML::Node>(projectilePackagePath.string());
+
+	auto texture = *resourceMng.Get(textureHandle);
+	auto shader = *resourceMng.Get(shaderHandle);
+	auto projectilePackageNode = *resourceMng.Get(projectilePackageHandle);
+
 	std::string projectilePackage = blueprintInfo["weapon"].as<std::string>();
 
-	auto prototypes = loadProjectilePackage(projectilePackageBlueprint[projectilePackage]);
+	auto prototypes = loadProjectilePackage(projectilePackageNode[projectilePackage]);
 	auto cooldowns = CooldownComponent();
 	for (auto& prototype : prototypes)
 	{
@@ -68,7 +74,7 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 
 	auto& world = Hori::Ecs::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, std::move(sprite), std::move(shader), std::move(velocity), std::move(health), std::move(transform), std::move(cooldowns), std::move(Hori::SphereCollider(transform)), std::move(Hori::Sprite()), EnemyComponent(), SpawnerComponent(), std::move(wireframe));
+	world.AddComponents(enemy, std::move(texture), std::move(shader), std::move(velocity), std::move(health), std::move(transform), std::move(cooldowns), std::move(Hori::SphereCollider(transform)), std::move(Hori::Sprite()), EnemyComponent(), SpawnerComponent(), std::move(wireframe));
 
 	return enemy;
 }
