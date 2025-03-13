@@ -56,9 +56,17 @@ int main()
 	auto enemyBlueprints = resourceMng.Get(enemiesHandle);
 	auto enemyPrototype1 = createEnemyPrototype((*enemyBlueprints)["base_enemy"]);
 	auto enemyPrototype2 = createEnemyPrototype((*enemyBlueprints)["other_enemy"]);
+	
+	auto position = glm::vec2{ 0.f, 0.f };
+	float rotation = 0.0f;
+	Hori::TransformComponent transform = {
+		.position = position,
+		.rotation = rotation,
+		.scale = {4.f, 4.f}
+	};
 
 	auto enemySpawner1 = world.CreateEntity();
-	world.AddComponents(enemySpawner1, SpawnerComponent(), CooldownComponent({{enemyPrototype1, CooldownType::EnemySpawn, 3.f}}));
+	world.AddComponents(enemySpawner1, std::move(transform), SpawnerComponent(), CooldownComponent({{enemyPrototype1, CooldownType::EnemySpawn, 5.f}}));
 	/*for (int i = 0; i < 5; i++)
 	{
 		auto enemySpawner2 = world.CreateEntity();

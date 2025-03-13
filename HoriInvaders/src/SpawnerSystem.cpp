@@ -64,11 +64,17 @@ Hori::Entity SpawnerSystem::SpawnEnemy(Hori::Entity& prototype, Hori::Entity& sp
 {
 	auto& world = Hori::Ecs::GetInstance();
 
+	std::cout << "Spawning enemy\n";
+
 	auto enemy = world.Clone(prototype);
 
 	auto spawnerComponent = world.GetComponent<SpawnerComponent>(spawnerEntity);
-	//auto transform = *world.GetComponent<Hori::TransformComponent>(spawnerEntity);
-	world.AddComponents(enemy);
+	auto transform = *world.GetComponent<Hori::TransformComponent>(spawnerEntity);
+	glm::vec2 direction = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(transform.rotation - 90.f));
+	auto velocity = world.GetComponent<Hori::VelocityComponent>(enemy);
+	velocity->dir = direction;
+
+	world.AddComponents(enemy, std::move(transform));
 
 	spawnerComponent->spawned.insert(enemy);
 

@@ -52,18 +52,9 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 	}
 
 	auto screenDim = Hori::Renderer::GetInstance().GetWindowSize();
-	auto position = blueprintInfo["position"];
-	auto rotation = blueprintInfo["rotation"].as<float>();
-	auto size = blueprintInfo["size"].as<float>();
-	Hori::TransformComponent transform = {
-		.position = { position[0].as<float>(), position[0].as<float>()},
-		.rotation = rotation,
-		.scale = { size, size }
-	};
 
 	auto speed = blueprintInfo["speed"].as<float>();
-	auto direction = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(rotation - 90.f));
-	Hori::VelocityComponent velocity(direction, speed);
+	Hori::VelocityComponent velocity({0.f, 0.f}, speed);
 
 	auto health = HealthComponent(blueprintInfo["health"].as<int>());
 
@@ -71,7 +62,7 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 	auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, std::move(sprite), std::move(shader), std::move(transform), std::move(velocity), std::move(health), std::move(cooldowns), Hori::SphereCollider(transform), Hori::SpriteComponent(), EnemyComponent(), SpawnerComponent(), std::move(wireframe));
+	world.AddComponents(enemy, std::move(sprite), std::move(shader), std::move(velocity), std::move(health), std::move(cooldowns), Hori::SpriteComponent(), EnemyComponent(), SpawnerComponent(), std::move(wireframe));
 
 	return enemy;
 }
