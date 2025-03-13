@@ -1,7 +1,7 @@
 #pragma once
 
 #include <System.h>
-#include <Core/Transform.h>
+#include <Core/Components.h>
 #include <Entity.h>
 
 #include "Projectile.h"

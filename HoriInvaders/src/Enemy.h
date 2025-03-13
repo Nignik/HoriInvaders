@@ -3,13 +3,10 @@
 #include <memory>
 
 #include <Core/Ecs.h>
-#include <Core/Texture.h>
-#include <Core/Shader.h>
-#include <Core/VelocityComponent.h>
 #include <Core/EventManager.h>
 #include <Core/Renderer.h>
-#include <Core/WireframeComponent.h>
 #include <Core/PrimitivesGeneration.h>
+#include <Core/Components.h>
 
 #include "HealthComponent.h"
 #include "YamlUtils.h"
@@ -30,17 +27,18 @@ struct EnemyComponent {};
 
 inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 {
+	auto& world = Hori::Ecs::GetInstance();
+	auto& resourceMng = Hori::ResourceManager::GetInstance();
+
 	std::filesystem::path texturePath = blueprintInfo["sprite"].as<std::string>();
 	std::filesystem::path shaderPath = blueprintInfo["shader"].as<std::string>();
 	std::filesystem::path projectilePackagePath = "data/guns.yaml";
 
-	auto& resourceMng = Hori::ResourceManager::GetInstance();
-
-	auto textureHandle = resourceMng.Load<Hori::Texture2D>(texturePath);
-	auto shaderHandle = resourceMng.Load<Hori::Shader>(shaderPath);
+	auto spriteHandle = resourceMng.Load<Hori::SpriteComponent>(texturePath);
+	auto shaderHandle = resourceMng.Load<Hori::ShaderComponent>(shaderPath);
 	auto projectilePackageHandle = resourceMng.Load<YAML::Node>(projectilePackagePath.string());
 
-	auto texture = *resourceMng.Get(textureHandle);
+	auto sprite = *resourceMng.Get(spriteHandle);
 	auto shader = *resourceMng.Get(shaderHandle);
 	auto projectilePackageNode = *resourceMng.Get(projectilePackageHandle);
 
@@ -57,7 +55,7 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 	auto position = blueprintInfo["position"];
 	auto rotation = blueprintInfo["rotation"].as<float>();
 	auto size = blueprintInfo["size"].as<float>();
-	Hori::Transform transform = {
+	Hori::TransformComponent transform = {
 		.position = { position[0].as<float>(), position[0].as<float>()},
 		.rotation = rotation,
 		.scale = { size, size }
@@ -72,9 +70,8 @@ inline Hori::Entity createEnemyPrototype(YAML::Node blueprintInfo)
 	auto vertices = generateCircleVertices(0.5f, 10);
 	auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	auto& world = Hori::Ecs::GetInstance();
 	auto enemy = world.CreatePrototypeEntity();
-	world.AddComponents(enemy, std::move(texture), std::move(shader), std::move(velocity), std::move(health), std::move(transform), std::move(cooldowns), std::move(Hori::SphereCollider(transform)), std::move(Hori::Sprite()), EnemyComponent(), SpawnerComponent(), std::move(wireframe));
+	world.AddComponents(enemy, std::move(sprite), std::move(shader), std::move(transform), std::move(velocity), std::move(health), std::move(cooldowns), Hori::SphereCollider(transform), Hori::SpriteComponent(), EnemyComponent(), SpawnerComponent(), std::move(wireframe));
 
 	return enemy;
 }

@@ -1,14 +1,10 @@
 ﻿#include <iostream>
 
 #include <HoriEngine.h>
-#include <Core/Sprite.h>
-#include <Core/Controller.h>
 #include <Core/Collider.h>
-#include <Core/Shader.h>
-#include <Core/Texture.h>
-#include <Core/TextComponent.h>
 #include <Core/DebugUIComponents.h>
 #include <Core/YamlInspectorComponent.h>
+#include <Core/Components.h>
 #include <glm/glm.hpp>
 
 #include "Player.h"

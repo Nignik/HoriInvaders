@@ -5,8 +5,7 @@
 #include "CooldownComponent.h"
 
 #include <Core/Ecs.h>
-#include <Core/Sprite.h>
-#include <Core/Transform.h>
+#include <Core/Components.h>
 #include <Core/Renderer.h>
 #include <Core/Collider.h>
 #include <cmath>
@@ -45,10 +44,10 @@ Hori::Entity SpawnerSystem::SpawnProjectile(Hori::Entity& prototype, Hori::Entit
 	auto& world = Hori::Ecs::GetInstance();
 
 	auto spawnerComponent = world.GetComponent<SpawnerComponent>(spawnerEntity);
-	auto transform = world.GetComponent<Hori::Transform>(spawnerEntity);
+	auto transform = world.GetComponent<Hori::TransformComponent>(spawnerEntity);
 
 	auto projectile = world.Clone(prototype);
-	world.GetComponent<Hori::Transform>(projectile)->position = transform->position;
+	world.GetComponent<Hori::TransformComponent>(projectile)->position = transform->position;
 	world.GetComponent<Hori::SphereCollider>(projectile)->transform = Hori::SphereCollider(*transform, true).transform;
 
 	if (world.HasComponents<EnemyComponent>(spawnerEntity))
@@ -68,6 +67,9 @@ Hori::Entity SpawnerSystem::SpawnEnemy(Hori::Entity& prototype, Hori::Entity& sp
 	auto enemy = world.Clone(prototype);
 
 	auto spawnerComponent = world.GetComponent<SpawnerComponent>(spawnerEntity);
+	//auto transform = *world.GetComponent<Hori::TransformComponent>(spawnerEntity);
+	world.AddComponents(enemy);
+
 	spawnerComponent->spawned.insert(enemy);
 
 	return enemy;

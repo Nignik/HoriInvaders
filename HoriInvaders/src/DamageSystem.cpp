@@ -61,7 +61,7 @@ void DamageSystem::ProcessBounds()
 
 	for (auto& entity : world.GetEntitiesWith<HealthComponent>())
 	{
-		auto transform = world.GetComponent<Hori::Transform>(entity);
+		auto transform = world.GetComponent<Hori::TransformComponent>(entity);
 		if (transform == nullptr)
 			continue;
 

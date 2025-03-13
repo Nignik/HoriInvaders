@@ -3,17 +3,14 @@
 #include <filesystem>
 #include <vector>
 #include <yaml-cpp/yaml.h>
-#include <Core/Texture.h>
 #include <Core/ResourceManager.h>
-#include <Core/VelocityComponent.h>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
 #include <Core/Ecs.h>
 #include <Core/Collider.h>
-#include <Core/Sprite.h>
 #include <Core/PrimitivesGeneration.h>
-#include <Core/WireframeComponent.h>
+#include <Core/Components.h>
 
 #include "DamageComponent.h"
 #include "CooldownComponent.h"
@@ -33,15 +30,16 @@ struct PlayerProjectileComponent
 
 inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 {
+	auto& world = Hori::Ecs::GetInstance();
+	auto& resourceMng = Hori::ResourceManager::GetInstance();
+
 	fs::path texturePath = projectileData["sprite"].as<std::string>();
 	fs::path shaderPath = projectileData["shader"].as<std::string>();
 
-	auto& resourceMng = Hori::ResourceManager::GetInstance();
+	auto spriteHandle = resourceMng.Load<Hori::SpriteComponent>(texturePath);
+	auto shaderHandle = resourceMng.Load<Hori::ShaderComponent>(shaderPath);
 
-	auto textureHandle = resourceMng.Load<Hori::Texture2D>(texturePath);
-	auto shaderHandle = resourceMng.Load<Hori::Shader>(shaderPath);
-
-	auto texture = *resourceMng.Get(textureHandle);
+	auto sprite = *resourceMng.Get(spriteHandle);
 	auto shader = *resourceMng.Get(shaderHandle);
 
 	auto damage = DamageComponent(projectileData["damage"].as<float>());
@@ -52,7 +50,7 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 	auto velocity = Hori::VelocityComponent(dir, speed);
 	auto scale = projectileData["size"].as<float>();
 
-	Hori::Transform transform = {
+	Hori::TransformComponent transform = {
 		.position = glm::vec3(),
 		.rotation = glm::degrees(std::atan2(dir.x, dir.y)),
 		.scale = { scale, scale }
@@ -61,9 +59,8 @@ inline Hori::Entity createProjectilePrototype(YAML::Node projectileData)
 	auto vertices = generateCircleVertices(0.5f, 10);
 	auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 
-	auto& world = Hori::Ecs::GetInstance();
 	Hori::Entity projectilePrototype = world.CreatePrototypeEntity();
-	world.AddComponents(projectilePrototype, std::move(texture), std::move(shader), std::move(damage), std::move(velocity), std::move(health), std::move(transform), Hori::SphereCollider(transform, true), Hori::Sprite(), std::move(wireframe));
+	world.AddComponents(projectilePrototype, std::move(sprite), std::move(shader), std::move(damage), std::move(velocity), std::move(health), std::move(transform), Hori::SphereCollider(transform, true), Hori::SpriteComponent(), std::move(wireframe));
 
 	return projectilePrototype;
 }
