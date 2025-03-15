@@ -1,7 +1,8 @@
 #include "CooldownSystem.h"
-#include "CooldownComponent.h"
 
 #include <Core/Ecs.h>
+
+#include "Components.h"
 
 void CooldownSystem::Update(float dt)
 {

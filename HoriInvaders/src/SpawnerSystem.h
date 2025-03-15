@@ -4,7 +4,7 @@
 #include <Core/Components.h>
 #include <Entity.h>
 
-#include "Projectile.h"
+#include "EntityPrototypes.h"
 
 /*
 	Class responsible for instantiating projectiles in the world
@@ -18,6 +18,5 @@ public:
 
 private:
 	Hori::Entity SpawnProjectile(Hori::Entity& prototype, Hori::Entity& spawnerEntity);
-	Hori::Entity SpawnEnemy(Hori::Entity& prototype, Hori::Entity& spawnerEntity);
 
 };

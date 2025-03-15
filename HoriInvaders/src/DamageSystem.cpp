@@ -1,13 +1,12 @@
 #include "DamageSystem.h"
-#include "HealthComponent.h"
-#include "DamageComponent.h"
-#include "Player.h"
-#include "Enemy.h"
 
 #include <Core/EventManager.h>
 #include <Core/Ecs.h>
 #include <Core/Collider.h>
+#include <Core/Renderer.h>
 #include <iostream>
+
+#include "Components.h"
 
 void DamageSystem::Update(float dt)
 {

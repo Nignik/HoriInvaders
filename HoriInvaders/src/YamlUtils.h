@@ -4,7 +4,7 @@
 #include <Core/Ecs.h>
 #include <set>
 
-#include "Projectile.h"
+#include "EntityPrototypes.h"
 
 inline std::set<Hori::Entity> loadProjectilePackage(YAML::Node blueprint)
 {

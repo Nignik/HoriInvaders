@@ -1,12 +1,11 @@
 #include "DeathSystem.h"
-#include "HealthComponent.h"
-#include "SpawnerComponent.h"
-#include "Projectile.h"
 
 #include <Core/EventManager.h>
 #include <Core/Ecs.h>
 #include <Core/Collider.h>
 #include <iostream>
+
+#include "Components.h"
 
 DeathSystem::DeathSystem()
 {

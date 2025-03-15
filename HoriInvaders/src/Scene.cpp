@@ -1,7 +1,6 @@
 #include "Scene.h"
 
 #include <fstream>
-#include "CooldownComponent.h"
 
 Scene::Scene(fs::path yamlPath, std::string sceneName)
 {
