@@ -4,14 +4,20 @@
 #include <yaml-cpp/yaml.h>
 #include <World.h>
 #include <Core/HoriEngine.h>
+#include <Core/ResourceManager.h>
 
-namespace fs = std::filesystem;
 
 class Scene
 {
 public:
-	Scene(fs::path yamlPath, std::string sceneName);
+	Scene(Hori::ResourceHandle<YAML::Node> handle);
+	bool Init();
+	void InitSystems();
 
+	bool Reload();
 private:
-	std::vector<Hori::Entity> m_spawners{};
+	Hori::ResourceHandle<YAML::Node> m_handle{};
+	std::vector<Hori::Entity> m_entities{};
+
+
 };

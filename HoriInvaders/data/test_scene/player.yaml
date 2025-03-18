@@ -1,0 +1,8 @@
+health: 50
+speed: 30.0
+spawn:
+  - 0.5
+  - 0.5
+size: 9.0
+sprite: "resources/textures/awesomeface.png"
+shader: "shaders/sprite"

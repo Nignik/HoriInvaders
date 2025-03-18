@@ -9,12 +9,9 @@
 
 #include "Components.h"
 #include "Entities.h"
-#include "DamageSystem.h"
-#include "DeathSystem.h"
-#include "CooldownSystem.h"
-#include "SpawnerSystem.h"
 #include "EntityPrototypes.h"
 #include "Events.h"
+#include "Scene.h"
 
 using namespace std;
 
@@ -27,35 +24,32 @@ int main()
 
 	auto& renderer = Hori::Renderer::GetInstance();
 	auto& world = Hori::Ecs::GetInstance();
-
-	// BAD !!!!!!!!!! Damage system is not guaranteed to execute after the collision system
-	world.AddSystem<DamageSystem>(DamageSystem());
-	world.AddSystem<SpawnerSystem>(SpawnerSystem());
-	world.AddSystem<DeathSystem>(DeathSystem());
-	world.AddSystem<CooldownSystem>(CooldownSystem());
-
 	auto& resourceMng = Hori::ResourceManager::GetInstance();
-
-	auto enemyHandle = resourceMng.Load<YAML::Node>("data/enemies/base_enemy.yaml");
-	auto playerHandle = resourceMng.Load<YAML::Node>("data/player.yaml");
-	auto gunsHandle = resourceMng.Load<YAML::Node>("data/guns.yaml");
 
 	auto yamlInspector = world.CreateEntity();
 	Hori::YamlInspectorComponent yamlComp;
-	yamlComp.Open("data/enemies/base_enemy.yaml");
+	yamlComp.Open("data/test_scene/enemies/enemy_1.yaml");
 	world.AddComponents(yamlInspector, std::move(yamlComp));
 
 	auto fileBrowser = world.CreateEntity();
 	world.AddComponents(fileBrowser, Hori::FileBrowserComponent("file browser", "C:/"));
 	
-	auto playerData = resourceMng.Get(playerHandle);
-	auto player = spawnPlayer(*playerData);
-
-	auto guns = resourceMng.Get(gunsHandle);
-	//world.AddComponents<GunComponent>(player.entity, GunComponent(guns["player_gun"]));
-
-	auto enemyData = *resourceMng.Get(enemyHandle);
-	auto enemy = spawnEnemy(enemyData);
+	auto sceneHandle = resourceMng.Load<YAML::Node>("data/test_scene/scene.yaml");
+	Scene scene(sceneHandle);
+	scene.Init();
+	scene.InitSystems();
+	
+	Hori::Entity sceneReloadButton = world.CreateEntity();
+	Hori::ButtonComponent reloadScene("reload scene", std::bind(&Scene::Reload, &scene));
+	world.AddComponents(sceneReloadButton, std::move(reloadScene));
+	
+	Hori::Entity openYamlButton = world.CreateEntity();
+	Hori::ButtonComponent openYaml("open yaml", [&world, yamlInspector, fileBrowser]() {
+		auto yamlComponent = world.GetComponent<Hori::YamlInspectorComponent>(yamlInspector);
+		auto fileBrowserComponent = world.GetComponent<Hori::FileBrowserComponent>(fileBrowser);
+		yamlComponent->Open(fileBrowserComponent->selectedFilePath);
+	});
+	world.AddComponents(openYamlButton, std::move(openYaml));
 
 	engine.Run();
 

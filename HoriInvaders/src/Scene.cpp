@@ -1,28 +1,72 @@
 #include "Scene.h"
 
-#include <fstream>
+#include <cassert>
 
-Scene::Scene(fs::path yamlPath, std::string sceneName)
+#include "Entities.h"
+#include "DamageSystem.h"
+#include "SpawnerSystem.h"
+#include "DeathSystem.h"
+#include "CooldownSystem.h"
+
+Scene::Scene(Hori::ResourceHandle<YAML::Node> handle)
+	: m_handle(handle)
+{}
+
+bool Scene::Init()
 {
-	/*
-	try
+	auto& resourceMng = Hori::ResourceManager::GetInstance();
+	std::shared_ptr<YAML::Node> sceneNodePtr = resourceMng.Get(m_handle);
+	if (!sceneNodePtr)
 	{
-		auto scenes = YAML::LoadFile(yamlPath.string());
-		auto scene = scenes[sceneName];
-
-		auto& world = Hori::Ecs::GetInstance();
-
-		m_spawners.reserve(scene["enemy_spawners"].size())
-		for (auto spawner : scene["enemy_spawners"])
-		{
-			Hori::Transform transform{ {spawner["position"][0].as<float>(), spawner["position"][0].as<float>()}, 0.0f, {1.0f, 1.0f} };
-			float cooldown = spawner["cooldown"].as<float>();
-			std::string enemy = spawner["enemy"].as<std::string>();
-
-			Entity spawnerEntity = world.CreateEntity();
-			world.AddComponents(spawnerEntity, SpawnerComponent(), transform, CooldownComponent{})
-			m_spawners.push_back(spawnerEntity)
-		}
+		std::cout << "Error: Invalid scene handle\n";
+		return false;
 	}
-	*/
-};
+
+	YAML::Node& sceneNode = *sceneNodePtr;
+
+	std::filesystem::path playerNodePath{ sceneNode["player"].as<std::string>() };
+	auto playerNodePtr = resourceMng.Get<YAML::Node>(playerNodePath);
+	if (!playerNodePtr)
+	{
+		std::cout << "Error: Failed to get resource " << playerNodePath << '\n';
+		return false;
+	}
+	m_entities.push_back(spawnPlayer(*playerNodePtr));
+
+	for (const auto& pathNode : sceneNode["enemies"])
+	{
+		std::filesystem::path enemyNodePath{ pathNode.as<std::string>() };
+		auto enemyNodePtr = resourceMng.Get<YAML::Node>(enemyNodePath);
+		if (!enemyNodePtr)
+		{
+			std::cout << "Error: Failed to get resource " << enemyNodePath << '\n';
+			return false;
+		}
+		m_entities.push_back(spawnEnemy(*enemyNodePtr));
+	}
+
+	return true;
+}
+
+// Has to be done after engine systems are initialized
+void Scene::InitSystems()
+{
+	auto& world = Hori::Ecs::GetInstance();
+
+	world.AddSystem<DamageSystem>(DamageSystem());
+	world.AddSystem<SpawnerSystem>(SpawnerSystem());
+	world.AddSystem<DeathSystem>(DeathSystem());
+	world.AddSystem<CooldownSystem>(CooldownSystem());
+}
+
+bool Scene::Reload()
+{
+	auto& world = Hori::Ecs::GetInstance();
+
+	for (auto& e : m_entities)
+	{
+		world.RemoveEntity(e);
+	}
+
+	return Init();
+}

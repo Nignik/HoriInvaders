@@ -1,0 +1,12 @@
+weapon: enemy_gun
+health: 50
+speed: 15.0
+rotation: 0
+position:
+ - 20
+ - 20
+size:
+ - 10
+ - 10
+sprite: resources/textures/awesomeface.png
+shader: shaders/sprite
