@@ -2,3 +2,4 @@ player: "data/test_scene/player.yaml"
 enemies:
   - "data/test_scene/enemies/enemy_1.yaml"
   - "data/test_scene/enemies/enemy_2.yaml"
+next_scene: "data/test_scene/scene.yaml"

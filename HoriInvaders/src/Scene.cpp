@@ -7,10 +7,21 @@
 #include "SpawnerSystem.h"
 #include "DeathSystem.h"
 #include "CooldownSystem.h"
+#include "Events.h"
+#include <filesystem>
 
 Scene::Scene(Hori::ResourceHandle<YAML::Node> handle)
 	: m_handle(handle)
 {}
+
+//TODO: figure out how to safely destroy (some issuaes with destruction order in world)
+Scene::~Scene() = default;
+
+Scene& Scene:: operator=(const Scene&)
+{
+	Clear();
+	return *this;
+}
 
 bool Scene::Init()
 {
@@ -43,7 +54,11 @@ bool Scene::Init()
 			return false;
 		}
 		m_entities.push_back(spawnEnemy(*enemyNodePtr));
+		m_enemyCount++;
 	}
+	
+	std::filesystem::path nextScenePath = sceneNode["next_scene"].as<std::string>();
+	m_nextSceneHandle = resourceMng.Load<YAML::Node>(nextScenePath);
 
 	return true;
 }
@@ -57,9 +72,32 @@ void Scene::InitSystems()
 	world.AddSystem<SpawnerSystem>(SpawnerSystem());
 	world.AddSystem<DeathSystem>(DeathSystem());
 	world.AddSystem<CooldownSystem>(CooldownSystem());
+
+	auto& eventMng = Hori::EventManager::GetInstance();
+	eventMng.Subscribe<EnemyDeathEvent>(
+		[this](const EnemyDeathEvent& e) {
+			this->m_enemyCount--;
+		}
+	);
 }
 
 bool Scene::Reload()
+{
+	Clear();
+	return Init();
+}
+
+bool Scene::IsComplete() const
+{
+	return m_enemyCount == 0;
+}
+
+Hori::ResourceHandle<YAML::Node> Scene::GetNextSceneHandle() const
+{
+	return m_nextSceneHandle;
+}
+
+void Scene::Clear()
 {
 	auto& world = Hori::Ecs::GetInstance();
 
@@ -68,5 +106,5 @@ bool Scene::Reload()
 		world.RemoveEntity(e);
 	}
 
-	return Init();
+	m_entities.clear();
 }

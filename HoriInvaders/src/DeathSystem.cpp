@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "Components.h"
+#include "Events.h"
 
 DeathSystem::DeathSystem()
 {
@@ -22,7 +23,12 @@ void DeathSystem::Update(float deltaTime)
 		auto health = world.GetComponent<HealthComponent>(entity);
 		if (health->value > 0)
 			continue;
-
+		
+		if (world.HasComponents<EnemyComponent>(entity))
+		{
+			Hori::EventManager::GetInstance().AddEvents<EnemyDeathEvent>(EnemyDeathEvent{ entity });
+			std::cout << "Log: Enemy died\n";
+		}
 		world.RemoveEntity(entity);
 	}
 }

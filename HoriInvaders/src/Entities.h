@@ -77,25 +77,37 @@ inline Hori::Entity spawnPlayer(YAML::Node& data)
 
 	glm::vec2 screenDim = Hori::Renderer::GetInstance().GetWindowSize();
 	
-	Hori::TransformComponent transform = {
-		.position = { data["spawn"][0].as<float>(), data["spawn"][1].as<float>() },
-		.rotation = 0.0f,
-		.scale = {data["size"].as<float>(), data["size"].as<float>()}
-	};
-
-	fs::path shaderPath = data["shader"].as<std::string>();
-	fs::path spritePath = data["sprite"].as<std::string>();
+	std::filesystem::path spritePath = data["sprite"].as<std::string>();
+	std::filesystem::path shaderPath = data["shader"].as<std::string>();
+	std::filesystem::path projectilesPath = "data/guns.yaml";
 	
 	auto spritePtr = resourceMng.Get<Hori::SpriteComponent>(spritePath);
 	auto shaderPtr = resourceMng.Get<Hori::ShaderComponent>(shaderPath);
-	if (!spritePtr || !shaderPtr)
+	auto projectilesPtr = resourceMng.Get<YAML::Node>(projectilesPath);
+
+	if (!spritePtr || !shaderPtr || !projectilesPtr)
 	{
-		std::cout << "Failed to load player resources\n";
+		std::cout << "Failed to load enemy resources\n";
 		return {};
 	}
 
 	Hori::SpriteComponent sprite = *spritePtr;
 	Hori::ShaderComponent shader = *shaderPtr;
+	YAML::Node& projectiles = *projectilesPtr;
+	
+	std::string projectileNames = data["weapon"].as<std::string>();
+	std::set<Hori::Entity> prototypes = loadProjectilePackage(projectiles[projectileNames]);
+	CooldownComponent cooldowns{};
+	for (auto& prototype : prototypes)
+	{
+		cooldowns.cooldowns.emplace_back(prototype, CooldownType::ProjectileSpawn, 0.5f);
+	}
+
+	Hori::TransformComponent transform = {
+		.position = { data["spawn"][0].as<float>(), data["spawn"][1].as<float>() },
+		.rotation = 0.0f,
+		.scale = {data["size"].as<float>(), data["size"].as<float>()}
+	};
 
 	float speed = data["speed"].as<float>();
 	glm::vec2 direction = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(transform.rotation - 90.f));;
@@ -108,7 +120,7 @@ inline Hori::Entity spawnPlayer(YAML::Node& data)
 	Hori::WireframeComponent wireframe{ vertices, glm::vec3(0.0f, 1.0f, 0.0f) };
 	
 	Hori::Entity player = world.CreateEntity();
-	world.AddComponents(player, std::move(transform), std::move(shader), std::move(sprite), std::move(velocity), std::move(collider), PlayerComponent(), Hori::SpriteComponent(), Hori::ControllerComponent(), std::move(wireframe));
+	world.AddComponents(player, std::move(transform), std::move(shader), std::move(sprite), std::move(velocity), std::move(collider), std::move(cooldowns), PlayerComponent(), Hori::SpriteComponent(), Hori::ControllerComponent(), SpawnerComponent(), std::move(wireframe));
 
 	return player;
 }

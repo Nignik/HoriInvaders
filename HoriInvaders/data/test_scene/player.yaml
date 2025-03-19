@@ -6,3 +6,4 @@ spawn:
 size: 9.0
 sprite: "resources/textures/awesomeface.png"
 shader: "shaders/sprite"
+weapon: "enemy_gun"
