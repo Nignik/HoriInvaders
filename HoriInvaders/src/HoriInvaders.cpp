@@ -9,10 +9,10 @@
 
 #include "Components.h"
 #include "Entities.h"
-#include "EntityPrototypes.h"
 #include "Events.h"
 #include "Scene.h"
 #include "SceneSystem.h"
+#include "ComponentParser.h"
 
 using namespace std;
 

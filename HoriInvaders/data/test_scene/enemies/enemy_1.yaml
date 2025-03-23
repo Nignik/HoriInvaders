@@ -1,12 +1,25 @@
-weapon: enemy_gun
 health: 50
-speed: 15.0
-rotation: 0
-position:
-  - 5
-  - 5
-size:
-  - 10
-  - 10
-sprite: resources/textures/awesomeface.png
+velocity:
+  speed: 0.0
+  direction: 0
+transform:
+  position:
+    x: 5
+    y: 5
+  rotation: 0
+  scale:
+    x: 10
+    y: 10
+sprite: resources/sprites/enemy.png
 shader: shaders/sprite
+projectiles:
+  - data/test_scene/projectiles/projectile_1.yaml
+  - data/test_scene/projectiles/projectile_3.yaml
+  - data/test_scene/projectiles/projectile_4.yaml
+  - data/test_scene/projectiles/projectile_5.yaml
+  - data/test_scene/projectiles/projectile_6.yaml
+  - data/test_scene/projectiles/projectile_7.yaml
+  - data/test_scene/projectiles/projectile_8.yaml
+  - data/test_scene/projectiles/projectile_9.yaml
+  - data/test_scene/projectiles/projectile_10.yaml
+  - data/test_scene/projectiles/projectile_11.yaml

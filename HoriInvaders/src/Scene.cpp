@@ -101,7 +101,7 @@ void Scene::Clear()
 {
 	auto& world = Hori::Ecs::GetInstance();
 
-	for (auto& e : m_entities)
+	for (auto& e : world.GetEntitiesWith<ActorComponent>())
 	{
 		world.RemoveEntity(e);
 	}

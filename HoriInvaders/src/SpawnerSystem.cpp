@@ -45,7 +45,7 @@ Hori::Entity SpawnerSystem::SpawnProjectile(Hori::Entity& prototype, Hori::Entit
 
 	auto projectile = world.Clone(prototype);
 	world.GetComponent<Hori::TransformComponent>(projectile)->position = transform->position;
-	world.GetComponent<Hori::SphereCollider>(projectile)->transform = Hori::SphereCollider(*transform, true).transform;
+	*world.GetComponent<Hori::SphereCollider>(projectile) = Hori::SphereCollider(*transform, true);
 
 	if (world.HasComponents<EnemyComponent>(spawnerEntity))
 		world.AddComponents(projectile, EnemyProjectileComponent());

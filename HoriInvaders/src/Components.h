@@ -1,12 +1,13 @@
 #pragma once
 
-#include <World.h>
+#include <Core/Ecs.h>
 #include <set>
 
 struct EnemyProjectileComponent {};
 struct PlayerProjectileComponent {};
 struct EnemyComponent {};
 struct PlayerComponent {};
+struct ActorComponent {};
 
 enum class CooldownType
 {

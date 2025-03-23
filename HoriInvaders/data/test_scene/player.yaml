@@ -1,9 +1,16 @@
-health: 50
-speed: 30.0
-spawn:
-  - 0.5
-  - 0.5
-size: 9.0
-sprite: "resources/textures/awesomeface.png"
-shader: "shaders/sprite"
-weapon: "enemy_gun"
+health: 1000
+velocity:
+  speed: 30.0
+  direction: 0
+transform:
+  position:
+    x: 0.5
+    y: 0.5
+  rotation: 0
+  scale:
+    x: 7
+    y: 7
+sprite: resources/sprites/player.png
+shader: shaders/sprite
+projectiles:
+  - data/test_scene/projectiles/projectile_2.yaml

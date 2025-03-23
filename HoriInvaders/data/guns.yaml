@@ -3,10 +3,18 @@ enemy_gun:
     base_projectile:
       damage: 50.0
       cooldown: 0.5
-      speed: 30.0
-      direction: 0.0
-      size: 3.0
-      sprite: "resources/textures/awesomeface.png"
+      velocity:
+        speed: 30.0
+        direction: 0.0
+      transform:
+        position:
+          x: 0
+          y: 0
+        rotation: 0
+        scale:
+          x: 3
+          y: 3
+      sprite: "resources/sprites/enemy_projectile.png"
       shader: "shaders/sprite"
 
 player_gun:
@@ -14,9 +22,17 @@ player_gun:
     base_projectile:
       damage: 50.0
       cooldown: 0.5
-      speed: 30.0
-      direction: 270.0
-      size: 3.0
-      sprite: "resources/textures/awesomeface.png"
+      velocity:
+        speed: 30.0
+        direction: 270.0
+      transform:
+        position:
+          x: 0
+          y: 0
+        rotation: 0
+        scale:
+          x: 3
+          y: 3
+      sprite: "resources/sprites/friendly_projectile.png"
       shader: "shaders/sprite"
       

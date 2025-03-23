@@ -4,7 +4,7 @@
 #include <Core/Components.h>
 #include <Entity.h>
 
-#include "EntityPrototypes.h"
+#include "Entities.h"
 
 /*
 	Class responsible for instantiating projectiles in the world
