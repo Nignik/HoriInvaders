@@ -10,8 +10,9 @@ transform:
   scale:
     x: 10
     y: 10
+collider:
+  is_trigger: false
 sprite: resources/sprites/enemy.png
 shader: shaders/sprite
 projectiles:
   - data/test_scene/projectiles/projectile_1.yaml
-  - data/test_scene/projectiles/projectile_2.yaml

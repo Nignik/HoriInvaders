@@ -42,7 +42,7 @@ bool Scene::Init()
 		std::cout << "Error: Failed to get resource " << playerNodePath << '\n';
 		return false;
 	}
-	m_entities.push_back(spawnPlayer(*playerNodePtr));
+	m_entities.push_back(entities::spawnPlayer(*playerNodePtr));
 
 	for (const auto& pathNode : sceneNode["enemies"])
 	{
@@ -53,7 +53,7 @@ bool Scene::Init()
 			std::cout << "Error: Failed to get resource " << enemyNodePath << '\n';
 			return false;
 		}
-		m_entities.push_back(spawnEnemy(*enemyNodePtr));
+		m_entities.push_back(entities::spawnEnemy(*enemyNodePtr));
 		m_enemyCount++;
 	}
 	

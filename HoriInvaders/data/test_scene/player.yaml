@@ -10,6 +10,8 @@ transform:
   scale:
     x: 7
     y: 7
+collider:
+  is_trigger: false
 sprite: resources/sprites/player.png
 shader: shaders/sprite
 projectiles:

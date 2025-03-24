@@ -37,6 +37,9 @@ void DamageSystem::ProcessTriggers()
 				continue;
 			}
 
+			std::cout << (world.HasComponents<PlayerComponent>(entityA) && world.HasComponents<EnemyProjectileComponent>(entityB)) << '\n';
+			std::cout << (world.HasComponents<EnemyComponent>(entityA) && world.HasComponents<PlayerProjectileComponent>(entityB)) << '\n';
+
 			if ((world.HasComponents<PlayerComponent>(entityA) && world.HasComponents<EnemyProjectileComponent>(entityB)) ||
 				(world.HasComponents<EnemyComponent>(entityA) && world.HasComponents<PlayerProjectileComponent>(entityB)))
 			{

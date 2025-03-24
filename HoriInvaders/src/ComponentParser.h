@@ -10,7 +10,7 @@ template <typename T>
 concept CanBeParsed = requires {
 	Hori::AnyOf<
 		T, 
-		Hori::TransformComponent, Hori::VelocityComponent,
+		Hori::TransformComponent, Hori::VelocityComponent, Hori::SphereCollider,
 		CooldownComponent, DamageComponent, HealthComponent, SpawnerComponent
 	>;
 };
@@ -94,4 +94,13 @@ struct ComponentParser<Hori::VelocityComponent>
 	}
 };
 
-
+//TODO: Make more flexible
+template<>
+struct ComponentParser<Hori::SphereCollider>
+{
+	static Hori::SphereCollider Parse(const YAML::Node& node)
+	{
+		Hori::SphereCollider collider{ Hori::TransformComponent{}, node["is_trigger"].as<bool>()};
+		return collider;
+	}
+};

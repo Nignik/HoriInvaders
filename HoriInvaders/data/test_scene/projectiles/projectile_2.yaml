@@ -11,5 +11,7 @@ transform:
   scale:
     x: 3
     y: 3
+collider:
+  is_trigger: true
 sprite: "resources/sprites/friendly_projectile.png"
 shader: "shaders/sprite"
