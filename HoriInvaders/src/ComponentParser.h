@@ -10,8 +10,8 @@ template <typename T>
 concept CanBeParsed = requires {
 	Hori::AnyOf<
 		T, 
-		Hori::TransformComponent, Hori::VelocityComponent, Hori::SphereCollider,
-		CooldownComponent, DamageComponent, HealthComponent, SpawnerComponent
+		Hori::Transform, Hori::Velocity, Hori::SphereCollider,
+		Cooldown, Damage, Health, SpawnerComponent
 	>;
 };
 
@@ -49,11 +49,11 @@ inline T parse(const YAML::Node& node)
 }
 
 template<>
-struct ComponentParser<Hori::TransformComponent>
+struct ComponentParser<Hori::Transform>
 {
-	static Hori::TransformComponent Parse(const YAML::Node& node)
+	static Hori::Transform Parse(const YAML::Node& node)
 	{
-		Hori::TransformComponent t{
+		Hori::Transform t{
 			.position = {node["position"]["x"].as<float>(), node["position"]["y"].as<float>()},
 			.rotation = node["rotation"].as<float>(),
 			.scale = {node["scale"]["x"].as<float>(), node["scale"]["y"].as<float>()}
@@ -81,11 +81,11 @@ struct ComponentParser<CooldownComponent>
 };*/
 
 template<>
-struct ComponentParser<Hori::VelocityComponent>
+struct ComponentParser<Hori::Velocity>
 {
-	static Hori::VelocityComponent Parse(const YAML::Node& node)
+	static Hori::Velocity Parse(const YAML::Node& node)
 	{
-		Hori::VelocityComponent v {
+		Hori::Velocity v {
 			.dir = glm::rotate(glm::vec2(1.0f, 0.0), glm::radians(node["direction"].as<float>() - 90.f)),
 			.speed = node["speed"].as<float>()
 		};
@@ -100,7 +100,7 @@ struct ComponentParser<Hori::SphereCollider>
 {
 	static Hori::SphereCollider Parse(const YAML::Node& node)
 	{
-		Hori::SphereCollider collider{ Hori::TransformComponent{}, node["is_trigger"].as<bool>()};
+		Hori::SphereCollider collider{ Hori::Transform{}, node["is_trigger"].as<bool>()};
 		return collider;
 	}
 };

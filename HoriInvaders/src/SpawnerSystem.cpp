@@ -2,7 +2,6 @@
 
 #include <Core/Components.h>
 #include <Core/Renderer.h>
-#include <Core/Collider.h>
 #include <cmath>
 
 #include "Components.h"
@@ -19,7 +18,7 @@ void SpawnerSystem::Update(float deltaTime)
 
 	for (auto spawnerEntity : world.GetEntitiesWith<SpawnerComponent>())
 	{
-		auto& cooldowns = world.GetComponent<CooldownComponent>(spawnerEntity)->cooldowns;
+		auto& cooldowns = world.GetComponent<Cooldown>(spawnerEntity)->cooldowns;
 
 		for (auto& cooldown : cooldowns)
 		{
@@ -41,18 +40,16 @@ Hori::Entity SpawnerSystem::SpawnProjectile(Hori::Entity& prototype, Hori::Entit
 	auto& world = Hori::Ecs::GetInstance();
 
 	auto spawnerComponent = world.GetComponent<SpawnerComponent>(spawnerEntity);
-	auto transform = world.GetComponent<Hori::TransformComponent>(spawnerEntity);
+	auto transform = world.GetComponent<Hori::Transform>(spawnerEntity);
 
 	auto projectile = world.Clone(prototype);
-	world.GetComponent<Hori::TransformComponent>(projectile)->position = transform->position;
+	world.GetComponent<Hori::Transform>(projectile)->position = transform->position;
 	*world.GetComponent<Hori::SphereCollider>(projectile) = Hori::SphereCollider(*transform, true);
 
 	if (world.HasComponents<EnemyComponent>(spawnerEntity))
 		world.AddComponents(projectile, EnemyProjectileComponent());
 	else if (world.HasComponents<PlayerComponent>(spawnerEntity))
 		world.AddComponents(projectile, PlayerProjectileComponent());
-
-	spawnerComponent->spawned.insert(projectile);
 
 	return projectile;
 }

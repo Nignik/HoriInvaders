@@ -2,7 +2,6 @@
 
 #include <Core/EventManager.h>
 #include <Core/Ecs.h>
-#include <Core/Collider.h>
 #include <iostream>
 
 #include "Components.h"
@@ -18,9 +17,9 @@ void DeathSystem::Update(float deltaTime)
 {
 	auto& world = Hori::Ecs::GetInstance();
 
-	for (auto entity : world.GetEntitiesWith<HealthComponent>())
+	for (auto entity : world.GetEntitiesWith<Health>())
 	{
-		auto health = world.GetComponent<HealthComponent>(entity);
+		auto health = world.GetComponent<Health>(entity);
 		if (health->value > 0)
 			continue;
 		

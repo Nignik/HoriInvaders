@@ -6,7 +6,7 @@ transform:
   position:
     x: 0.5
     y: 0.5
-  rotation: 0
+  rotation: 1
   scale:
     x: 7
     y: 7

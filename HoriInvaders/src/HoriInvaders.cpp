@@ -1,10 +1,9 @@
 ﻿#include <iostream>
 
 #include <HoriEngine.h>
-#include <Core/Collider.h>
 #include <Core/DebugUIComponents.h>
-#include <Core/YamlInspectorComponent.h>
 #include <Core/Components.h>
+#include <Core/YamlInspector.h>
 #include <glm/glm.hpp>
 
 #include "Components.h"
@@ -30,7 +29,7 @@ int main()
 	world.AddSystem<SceneSystem>(SceneSystem{});
 
 	auto yamlInspector = world.CreateEntity();
-	Hori::YamlInspectorComponent yamlComp{"C:/DEV/GamesDev/HoriInvaders/HoriInvaders"};
+	Hori::YamlInspector yamlComp{"C:/DEV/GamesDev/HoriInvaders/HoriInvaders"};
 	yamlComp.Open("data/test_scene/enemies/enemy_1.yaml");
 	world.AddComponents(yamlInspector, std::move(yamlComp));
 
@@ -49,7 +48,7 @@ int main()
 	
 	Hori::Entity openYamlButton = world.CreateEntity();
 	Hori::ButtonComponent openYaml("open yaml", [&world, yamlInspector, fileBrowser]() {
-		auto yamlComponent = world.GetComponent<Hori::YamlInspectorComponent>(yamlInspector);
+		auto yamlComponent = world.GetComponent<Hori::YamlInspector>(yamlInspector);
 		auto fileBrowserComponent = world.GetComponent<Hori::FileBrowserComponent>(fileBrowser);
 		if (fileBrowserComponent->selectedFilePath.extension() != ".yaml")
 		{
@@ -61,7 +60,7 @@ int main()
 	world.AddComponents(openYamlButton, std::move(openYaml));
 
 	Hori::Entity saveYamlEntity = world.CreateEntity();
-	Hori::ButtonComponent saveYamlButton{ "save yaml", std::bind(&Hori::YamlInspectorComponent::Save, world.GetComponent<Hori::YamlInspectorComponent>(yamlInspector)) };
+	Hori::ButtonComponent saveYamlButton{ "save yaml", std::bind(&Hori::YamlInspector::Save, world.GetComponent<Hori::YamlInspector>(yamlInspector)) };
 	world.AddComponents(saveYamlEntity, std::move(saveYamlButton));
 
 	engine.Run();

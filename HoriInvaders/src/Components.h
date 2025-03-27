@@ -8,6 +8,7 @@ struct PlayerProjectileComponent {};
 struct EnemyComponent {};
 struct PlayerComponent {};
 struct ActorComponent {};
+struct SpawnerComponent {};
 
 enum class CooldownType
 {
@@ -29,26 +30,17 @@ struct CooldownSlot
 * Component used to track the cooldown.
 * Ready has to be set to false manually, but sets to true automatically
 */
-struct CooldownComponent
+struct Cooldown
 {
 	std::vector<CooldownSlot> cooldowns{};
 };
 
-struct DamageComponent
+struct Damage
 {
 	float value = 0.f;
 };
 
-struct HealthComponent
+struct Health
 {
-	int value;
-};
-
-/*
-* Spawner component only stores the spawned entities and makes the entity visible to spawner system
-* Projectile prototypes are stored in the cooldown component
-*/
-struct SpawnerComponent
-{
-	std::set<Hori::Entity> spawned{};
+	int value{};
 };

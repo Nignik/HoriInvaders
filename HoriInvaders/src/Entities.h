@@ -6,7 +6,6 @@
 #include <Core/PrimitivesGeneration.h>
 #include <Core/Components.h>
 #include <Core/ResourceManager.h>
-#include <Core/Collider.h>
 
 #include <yaml-cpp/yaml.h>
 
@@ -19,33 +18,33 @@ namespace entities
 
 	inline void addTranform(Hori::Entity e, const YAML::Node& data)
 	{
-		auto transform = parse<Hori::TransformComponent>(data["transform"]);
+		auto transform = parse<Hori::Transform>(data["transform"]);
 		world.AddComponents(e, std::move(transform));
 	}
 
 	inline void addHealth(Hori::Entity e, const YAML::Node& data)
 	{
-		HealthComponent health{ data["health"].as<int>() };
+		Health health{ data["health"].as<int>() };
 		world.AddComponents(e, std::move(health));
 	}
 	
 	inline void addDamage(Hori::Entity e, const YAML::Node& data)
 	{
-		DamageComponent damage{ data["damage"].as<float>() };
+		Damage damage{ data["damage"].as<float>() };
 		world.AddComponents(e, std::move(damage));
 	}
 
 	inline void addWireframe(Hori::Entity e)
 	{
 		float radius = world.GetComponent<Hori::SphereCollider>(e)->radius;
-		std::vector<float> vertices = generateCircleVertices(radius, 10);
-		auto wireframe = Hori::WireframeComponent(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
+		std::vector<float> vertices = generateCircleVertices(0.3f, 10);
+		auto wireframe = Hori::Wireframe(vertices, glm::vec3(0.0f, 1.0f, 0.0f));
 		world.AddComponents(e, std::move(wireframe));
 	}
 
 	inline void makeDynamic(Hori::Entity e, const YAML::Node& data)
 	{
-		auto velocity = parse<Hori::VelocityComponent>(data["velocity"]);
+		auto velocity = parse<Hori::Velocity>(data["velocity"]);
 		world.AddComponents(e, std::move(velocity));
 	}
 
@@ -54,8 +53,8 @@ namespace entities
 		std::filesystem::path spritePath = data["sprite"].as<std::string>();
 		std::filesystem::path shaderPath = data["shader"].as<std::string>();
 		
-		auto spritePtr = resourceMng.Get<Hori::SpriteComponent>(spritePath);
-		auto shaderPtr = resourceMng.Get<Hori::ShaderComponent>(shaderPath);
+		auto spritePtr = resourceMng.Get<Hori::Sprite>(spritePath);
+		auto shaderPtr = resourceMng.Get<Hori::Shader>(shaderPath);
 
 		if (!spritePtr || !shaderPtr)
 		{
@@ -63,8 +62,8 @@ namespace entities
 			return;
 		}
 
-		Hori::SpriteComponent sprite = *spritePtr;
-		Hori::ShaderComponent shader = *shaderPtr;
+		Hori::Sprite sprite = *spritePtr;
+		Hori::Shader shader = *shaderPtr;
 		
 		world.AddComponents(e, std::move(sprite), std::move(shader));
 	}
@@ -72,7 +71,7 @@ namespace entities
 	inline void makeCollidable(Hori::Entity e, const YAML::Node& data)
 	{
 		bool isTrigger = data["collider"]["is_trigger"].as<bool>();
-		Hori::SphereCollider collider{*world.GetComponent<Hori::TransformComponent>(e), isTrigger};
+		Hori::SphereCollider collider{*world.GetComponent<Hori::Transform>(e), 0.3f, isTrigger};
 		world.AddComponents(e, std::move(collider));
 	}
 
@@ -92,13 +91,13 @@ namespace entities
 			makeDrawable(prototype, *projectile);
 			makeDynamic(prototype, *projectile);
 			makeCollidable(prototype, *projectile);
-			world.AddComponents(prototype, HealthComponent{1000});
+			world.AddComponents(prototype, ActorComponent(), Health{1000});
 			
 			addWireframe(prototype);
 			prototypes.insert(prototype);
 		}
 
-		CooldownComponent cooldowns{};
+		Cooldown cooldowns{};
 		for (auto& prototype : prototypes)
 		{
 			cooldowns.cooldowns.emplace_back(prototype, CooldownType::ProjectileSpawn, 0.5f);
@@ -114,19 +113,18 @@ namespace entities
 		makeDrawable(e, data);
 		makeDynamic(e, data);
 		makeCollidable(e, data);
+		world.AddComponents(e, ActorComponent());
 	}
 	
 	// Requires the entity to have a transform
 	// Collider passed is used for additional stuff not related to entity like: isTrigger
-	
 	inline Hori::Entity spawnPlayer(const YAML::Node& data)
 	{
 		Hori::Entity player = world.CreateEntity();
 		makeCreature(player, data);
-		makeShooter(player, data);
-		world.AddComponents(player, PlayerComponent(), Hori::ControllerComponent());
-
-		std::cout << "Player entity: " << player.GetID() << '\n';
+		//makeShooter(player, data);
+		addWireframe(player);
+		world.AddComponents(player, PlayerComponent(), Hori::Controller());
 
 		return player;
 	}
@@ -138,8 +136,6 @@ namespace entities
 		makeShooter(enemy, data);
 		addWireframe(enemy);
 		world.AddComponents(enemy, EnemyComponent());
-
-		std::cout << "Enemy entity: " << enemy.GetID() << '\n';
 
 		return enemy;
 	}

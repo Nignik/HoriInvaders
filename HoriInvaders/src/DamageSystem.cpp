@@ -2,7 +2,7 @@
 
 #include <Core/EventManager.h>
 #include <Core/Ecs.h>
-#include <Core/Collider.h>
+#include <Core/Events.h>
 #include <Core/Renderer.h>
 #include <iostream>
 
@@ -28,17 +28,14 @@ void DamageSystem::ProcessTriggers()
 		Hori::Entity entityB = event->entityB;
 		for (int i = 0; i < 2; i++)
 		{
-			auto health = world.GetComponent<HealthComponent>(entityA);
-			auto damage = world.GetComponent<DamageComponent>(entityB);
+			auto health = world.GetComponent<Health>(entityA);
+			auto damage = world.GetComponent<Damage>(entityB);
 
 			if (health == nullptr || damage == nullptr)
 			{
 				std::swap(entityA, entityB);
 				continue;
 			}
-
-			std::cout << (world.HasComponents<PlayerComponent>(entityA) && world.HasComponents<EnemyProjectileComponent>(entityB)) << '\n';
-			std::cout << (world.HasComponents<EnemyComponent>(entityA) && world.HasComponents<PlayerProjectileComponent>(entityB)) << '\n';
 
 			if ((world.HasComponents<PlayerComponent>(entityA) && world.HasComponents<EnemyProjectileComponent>(entityB)) ||
 				(world.HasComponents<EnemyComponent>(entityA) && world.HasComponents<PlayerProjectileComponent>(entityB)))
@@ -61,14 +58,14 @@ void DamageSystem::ProcessBounds()
 	auto& eventMng = Hori::EventManager::GetInstance();
 	auto cameraSize = Hori::Renderer::GetInstance().GetCameraSize();
 
-	for (auto& entity : world.GetEntitiesWith<HealthComponent>())
+	for (auto& entity : world.GetEntitiesWith<Health>())
 	{
-		auto transform = world.GetComponent<Hori::TransformComponent>(entity);
+		auto transform = world.GetComponent<Hori::Transform>(entity);
 		if (transform == nullptr)
 			continue;
 
 		auto pos = transform->position;
 		if (pos.x < -cameraSize.x || pos.x > cameraSize.x || pos.y < -cameraSize.y || pos.y > cameraSize.y)
-			world.GetComponent<HealthComponent>(entity)->value = 0;
+			world.GetComponent<Health>(entity)->value = 0;
 	}
 }
